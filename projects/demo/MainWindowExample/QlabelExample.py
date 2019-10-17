@@ -20,6 +20,9 @@ from PyQt5.QtWidgets import QLabel,QApplication,QPushButton,QWidget,QVBoxLayout
 from PyQt5.QtGui import QIcon,QPalette,QPixmap
 #QPalette :调色板
 from PyQt5.QtCore import Qt
+
+#此时如果继承QMainWindow,此时label排版将出现问题，显示不全label中信息
+
 class QLabelDemo(QWidget):
     def __init__(self):
         super(QLabelDemo, self).__init__()
