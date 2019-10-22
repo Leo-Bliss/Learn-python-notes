@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bb3bd160-2a5d-49a6-834d-0eb13b98c4be" name="Default Changelist" comment="">
+<<<<<<< HEAD
+=======
+      <change afterPath="$PROJECT_DIR$/projects/demo/MainWindowExample/QLineEiditEchoMode.py" afterDir="false" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/projects/demo/Calculator/calc.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/demo/Calculator/calc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/projects/demo/MainWindowExample/QlabelExample.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/demo/MainWindowExample/QlabelExample.py" afterDir="false" />
@@ -15,12 +19,21 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
+<<<<<<< HEAD
         <entry file="file://$PROJECT_DIR$/projects/spider/Header.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="271">
               <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
               <folding>
                 <element signature="e#45#55#0" expanded="true" />
+=======
+        <entry file="file://$PROJECT_DIR$/projects/demo/MainWindowExample/QLineEiditEchoMode.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
+              <folding>
+                <element signature="e#157#251#0" expanded="true" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
               </folding>
             </state>
           </provider>
@@ -59,7 +72,10 @@
         <option value="$PROJECT_DIR$/projects/demo/MainWindowExample/QlabelBuddy.py" />
         <option value="$PROJECT_DIR$/projects/demo/Calculator/calc.py" />
         <option value="$PROJECT_DIR$/projects/demo/MainWindowExample/QLineEiditEchoMode.py" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/projects/spider/Header.py" />
+=======
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       </list>
     </option>
   </component>
@@ -97,7 +113,11 @@
               <item name="Learn-python-notes" type="47feb1d3:ProjectViewModuleNode" />
               <item name="Learn-python-notes" type="462c0819:PsiDirectoryNode" />
               <item name="projects" type="462c0819:PsiDirectoryNode" />
+<<<<<<< HEAD
               <item name="spider" type="462c0819:PsiDirectoryNode" />
+=======
+              <item name="demo" type="462c0819:PsiDirectoryNode" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
             </path>
           </expand>
           <select />
@@ -124,8 +144,13 @@
       </list>
     </option>
   </component>
+<<<<<<< HEAD
   <component name="RunManager" selected="Python.Header">
     <configuration name="Header" type="PythonConfigurationType" factoryName="Python" temporary="true">
+=======
+  <component name="RunManager" selected="Python.QLineEiditEchoMode">
+    <configuration name="QLineEiditEchoMode" type="PythonConfigurationType" factoryName="Python" temporary="true">
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       <module name="Learn-python-notes" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -138,29 +163,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+<<<<<<< HEAD
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/spider/Header.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="QLineEiditEchoMode" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Learn-python-notes" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/projects/demo/MainWindowExample" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+=======
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/demo/MainWindowExample/QLineEiditEchoMode.py" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -169,7 +176,11 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+<<<<<<< HEAD
+    <configuration name="QLineEiditEchoMode" type="PythonConfigurationType" factoryName="Python" temporary="true">
+=======
     <configuration name="QlabelBuddy" type="PythonConfigurationType" factoryName="Python" temporary="true">
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       <module name="Learn-python-notes" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -182,7 +193,41 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+<<<<<<< HEAD
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/demo/MainWindowExample/QLineEiditEchoMode.py" />
+=======
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/demo/MainWindowExample/QlabelBuddy.py" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+<<<<<<< HEAD
+    <configuration name="QlabelBuddy" type="PythonConfigurationType" factoryName="Python" temporary="true">
+=======
+    <configuration name="QuitApplication" type="PythonConfigurationType" factoryName="Python" temporary="true">
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
+      <module name="Learn-python-notes" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/projects/demo/MainWindowExample" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+<<<<<<< HEAD
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/demo/MainWindowExample/QlabelBuddy.py" />
+=======
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projects/demo/MainWindowExample/QuitApplication.py" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -237,11 +282,18 @@
     </configuration>
     <recent_temporary>
       <list>
+<<<<<<< HEAD
         <item itemvalue="Python.Header" />
+=======
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
         <item itemvalue="Python.QLineEiditEchoMode" />
         <item itemvalue="Python.QlabelBuddy" />
         <item itemvalue="Python.RunMainWinCalc" />
         <item itemvalue="Python.calc" />
+<<<<<<< HEAD
+=======
+        <item itemvalue="Python.QuitApplication" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       </list>
     </recent_temporary>
   </component>
@@ -259,7 +311,11 @@
       <workItem from="1570797261312" duration="455000" />
       <workItem from="1570797762628" duration="119000" />
       <workItem from="1570798009186" duration="12716000" />
+<<<<<<< HEAD
       <workItem from="1571323079177" duration="8720000" />
+=======
+      <workItem from="1571323079177" duration="5001000" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
     </task>
     <task id="LOCAL-00001" summary="创建项目文件夹">
       <created>1570798511082</created>
@@ -275,6 +331,7 @@
       <option name="project" value="LOCAL" />
       <updated>1570810457348</updated>
     </task>
+<<<<<<< HEAD
     <task id="LOCAL-00003" summary="QLineEditEchoMode">
       <created>1571328315056</created>
       <option name="number" value="00003" />
@@ -287,6 +344,13 @@
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="22022000" />
+=======
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="18303000" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
   </component>
   <component name="ToolWindowManager">
     <frame x="-12" y="25" width="1554" height="738" extended-state="0" />
@@ -297,7 +361,11 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
+<<<<<<< HEAD
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4986631" visible="true" weight="0.290378" />
+=======
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.290378" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39862543" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -305,9 +373,15 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3298969" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
+<<<<<<< HEAD
       <window_info active="true" anchor="bottom" id="Event Log" order="10" sideWeight="0.5013369" side_tool="true" visible="true" weight="0.290378" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.3298969" />
       <window_info anchor="bottom" id="Python Console" order="12" sideWeight="0.49933156" weight="0.3298969" />
+=======
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="11" />
+      <window_info anchor="bottom" id="Python Console" order="12" weight="0.3298969" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -347,13 +421,20 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="创建项目文件夹" />
     <MESSAGE value="QLabel练习" />
+<<<<<<< HEAD
     <MESSAGE value="QLineEditEchoMode" />
     <option name="LAST_COMMIT_MESSAGE" value="QLineEditEchoMode" />
+=======
+    <option name="LAST_COMMIT_MESSAGE" value="QLabel练习" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Learn_python_notes$login__1_.coverage" NAME="login (1) Coverage Results" MODIFIED="1570797828071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/myProjects/药房库存管理系统" />
     <SUITE FILE_PATH="coverage/Learn_python_notes$AutoFull.coverage" NAME="AutoFull Coverage Results" MODIFIED="1570798021353" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/demo" />
+<<<<<<< HEAD
     <SUITE FILE_PATH="coverage/Learn_python_notes$Header.coverage" NAME="Header Coverage Results" MODIFIED="1571410862515" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/spider" />
+=======
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
     <SUITE FILE_PATH="coverage/Learn_python_notes$calc.coverage" NAME="calc Coverage Results" MODIFIED="1571326550114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/demo/Calculator" />
     <SUITE FILE_PATH="coverage/Learn_python_notes$CenterForm.coverage" NAME="CenterForm Coverage Results" MODIFIED="1570798276288" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/demo/MainWindowExample" />
     <SUITE FILE_PATH="coverage/Learn_python_notes$TencentMovieHotPlay.coverage" NAME="TencentMovieHotPlay Coverage Results" MODIFIED="1570798175550" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projects/demo/Tencent" />
@@ -470,6 +551,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/projects/demo/Calculator/calc.py">
+<<<<<<< HEAD
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-3479">
           <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
@@ -485,26 +567,51 @@
           <caret line="41" column="55" lean-forward="true" selection-start-line="41" selection-start-column="55" selection-end-line="41" selection-end-column="55" />
           <folding>
             <element signature="e#67#77#0" expanded="true" />
+=======
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3479">
+          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
+          <folding>
+            <element signature="e#193#235#0" expanded="true" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/projects/demo/MainWindowExample/QLineEiditEchoMode.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-215">
           <caret line="22" column="21" lean-forward="true" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
           <folding>
             <element signature="e#157#251#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/projects/demo/MainWindowExample/QlabelBuddy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-550">
+          <caret line="41" column="55" lean-forward="true" selection-start-line="41" selection-start-column="55" selection-end-line="41" selection-end-column="55" />
+          <folding>
+            <element signature="e#67#77#0" expanded="true" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/projects/spider/Header.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="271">
           <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
           <folding>
             <element signature="e#45#55#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/projects/demo/MainWindowExample/QLineEiditEchoMode.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
+          <folding>
+            <element signature="e#157#251#0" expanded="true" />
+>>>>>>> 9d2f4001b3915bc2eab6412b9a14da2d21401c36
           </folding>
         </state>
       </provider>
