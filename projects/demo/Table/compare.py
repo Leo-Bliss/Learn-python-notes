@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import  *
-from PyQt5.QtCore import *
+# from PyQt5.QtCore import *
 
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data, parent=None):
@@ -108,8 +108,6 @@ class Window(QWidget):
         print('%s: %.3g seconds' % (mode, timer.elapsed() / 1000))
 
 if __name__ == '__main__':
-
-    import sys
     app = QApplication(sys.argv)
     window = Window()
     window.setGeometry(600, 50, 1200, 800)
