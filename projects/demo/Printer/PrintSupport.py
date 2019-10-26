@@ -12,7 +12,7 @@ import sys
 class PrintSupport(QMainWindow):
     def __init__(self):
         super(PrintSupport,self).__init__()
-        self.resize(500,500)
+        # self.resize(500,500)
         self.setWindowTitle('printer')
         #左上角坐标，长宽
         self.setGeometry(800,400,300,300)

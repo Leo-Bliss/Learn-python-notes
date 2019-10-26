@@ -40,8 +40,8 @@ class SetQIconFrame(QMainWindow):
    def center(self):
        screen = QDesktopWidget.screenGeometry()
        size = self.geometry()
-       new_left = (screen.width()-size.width())/2
-       new_top = (screen.height()-size.height())/2
+       new_left = (screen.width()-size.width())//2
+       new_top = (screen.height()-size.height())//2
        self.move(new_left,new_top())
 
 if __name__=='__main__':

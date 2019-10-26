@@ -6,8 +6,8 @@
 #@SoftWare:    PyCharm
 #@Blog    :    https://blog.csdn.net/tb_youth
 
-from PyQt5.QtWidgets import QApplication,QMainWindow,QStatusBar,QMenuBar,QTextEdit,QMessageBox
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 import sys
 class StatusBarDemo(QMainWindow):
     def __init__(self):
@@ -29,6 +29,11 @@ class StatusBarDemo(QMainWindow):
         file.addAction('new')
         file.triggered.connect(self.pressTrigger)
         self.setCentralWidget(QTextEdit())
+
+        #表格
+        self.mode = QStandardItemModel(100,15000)
+        self.tableview = QTableView()
+        self.tableview.setModel(self.mode)
 
     def pressTrigger(self,q):
         if(q.text()=='show'):

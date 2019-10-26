@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QApplication,QMainWindow,QToolBar,QAction
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 import sys
+import os
 
 
 class ToolBarDemo(QMainWindow):
@@ -20,23 +21,23 @@ class ToolBarDemo(QMainWindow):
     def initUI(self):
         self.resize(800,800)
         self.setWindowTitle('ToolBarDemo')
-        self.setWindowIcon(QIcon('./photos/分析.png'))
+        self.setWindowIcon(QIcon('D:\Learn-python-notes\projects\demo\icon\分析.png'))
 
         #工具栏
         toolbar1 = self.addToolBar('File')
-        new = QAction(QIcon('./photos/新建.png'),'new',self)
+        new = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\新建.png'),'new',self)
         toolbar1.addAction(new)
 
-        open = QAction(QIcon('./photos/打开.png'),'open',self)
+        open = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\打开.png'),'open',self)
         toolbar1.addAction(open)
 
-        save = QAction(QIcon('./photos/保存.png'),'save',self)
+        save = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\保存.png'),'save',self)
         toolbar1.addAction(save)
 
         toolbar1.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         toolbar2 = self.addToolBar('Setting')
-        setting = QAction(QIcon('./photos/设置.png'),'setting',self)
+        setting = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\设置.png'),'setting',self)
         toolbar2.addAction(setting)
         toolbar2.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -44,7 +45,10 @@ class ToolBarDemo(QMainWindow):
         toolbar2.actionTriggered.connect(self.toolbtnPressed)
 
     def toolbtnPressed(self,a):
-        print('%s被按下'%a.text())
+        #print('%s被按下'%a.text())
+        if a.text() == 'open':
+            os.system('start explorer D:\Learn-python-notes\material\科研实践\数据')
+
 
 
 

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1073</width>
+    <height>836</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTableView" name="tableView">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>601</width>
+      <height>751</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>30</y>
+      <width>371</width>
+      <height>751</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" rowspan="4">
+      <widget class="QListView" name="listView"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>自变量</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>&lt;=&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QListView" name="listView_2"/>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>因变量</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>&lt;=&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QListView" name="listView_3"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1073</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menunew">
+    <property name="title">
+     <string>new</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuopen">
+    <property name="title">
+     <string>open</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menusave">
+    <property name="title">
+     <string>save</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menusetting">
+    <property name="title">
+     <string>setting</string>
+    </property>
+   </widget>
+   <addaction name="menunew"/>
+   <addaction name="menuopen"/>
+   <addaction name="menusave"/>
+   <addaction name="menusetting"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

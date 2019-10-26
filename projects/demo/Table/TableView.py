@@ -16,7 +16,7 @@ Model
 MVC: M-->Model,V-->Viewer C--->Controller
 MVC的目的是使后端数据与前端页面耦合度降低
 '''
-from PyQt5.QtWidgets import QApplication,QMainWindow,QTableView,QVBoxLayout,QWidget
+from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 import sys
 class TableView(QWidget):
@@ -39,8 +39,8 @@ class TableView(QWidget):
         self.model.setItem(0,0,item11)
         self.model.setItem(0,1,item12)
         self.model.setItem(0,2,item13)
-
-
+        #不可编辑
+        # self.tableview.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #布局
         layout = QVBoxLayout()
         layout.addWidget(self.tableview)
