@@ -33,7 +33,7 @@ class SetQIconFrame(QMainWindow):
 
    def onClick_button(self):
        sender = self.sender()
-       print(self.button1.text()+'被单击：退出app')
+       print(sender.text()+'被单击：退出app')
        app = QApplication.instance()
        app.quit()
 
