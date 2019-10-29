@@ -35,14 +35,19 @@ class QuickApplication(QMainWindow):
         self.move(new_left,new_top)
     #slot：quit
     def onCilck_Button(self):
-        sender = self.sender()
-        print(sender.text()+'按钮被按下')
-        app = QApplication.instance()
-        app.quit()
+        app = QApplication(sys.argv)
+        now = SetQIcon.SetQIconFrame()
+        now.show()
+        sys.exit(app.exec_())
+
+        # sender = self.sender()
+        # print(sender.text()+'按钮被按下')
+        # app = QApplication.instance()
+        # app.quit()
 
 if __name__ == '__main__':
         app = QApplication(sys.argv)
         window = QuickApplication()
-        window.setWindowIcon(QIcon('./photos/qq.png'))
+        # window.setWindowIcon(QIcon('./photos/qq.png'))
         window.show()
         sys.exit(app.exec_())

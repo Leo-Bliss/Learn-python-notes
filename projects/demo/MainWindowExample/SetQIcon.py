@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 import sys
-from PyQt5.QtWidgets import QApplication,QPushButton,QWidget,QHBoxLayout,QMainWindow,QDesktopWidget
+from PyQt5.QtWidgets import QApplication,QPushButton,QWidget,QHBoxLayout,QMainWindow,QDesktopWidget,QDialog
 from PyQt5.QtGui import QIcon
 class SetQIconFrame(QMainWindow):
    def __init__(self):
@@ -47,7 +47,7 @@ class SetQIconFrame(QMainWindow):
 if __name__=='__main__':
     app = QApplication(sys.argv)
     #app Icon:调用窗口Icon的方法
-    #app.setWindowIcon(QIcon('./photos/qq.png'))
+    app.setWindowIcon(QIcon('./photos/qq.png'))
     window = SetQIconFrame()
     window.show()
     sys.exit(app.exec_())
