@@ -154,10 +154,9 @@ class Demo(QMainWindow):
         self.tableview.setModel(self.mode)
 
     def searchData(self):
-        pass
-        # self.dialog = SearchDialog()
-        # self.dialog.initUI()
-        # self.dialog.show()
+        self.dialog = SearchDialog()
+        self.dialog.initUI()
+        self.dialog.show()
 
 
 
