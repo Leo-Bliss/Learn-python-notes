@@ -6,22 +6,13 @@
 #@SoftWare:    PyCharm
 #@Blog    :    https://blog.csdn.net/tb_youth
 
-"""
-# 说明：特征选择方法一：过滤式特征选择（ReliefF算法）
-# 思想：先用特征选择过程对初始特征进行"过滤"，然后再用过滤后的特征训练模型
-# 时间：2019-1-16
-# 问题：
-"""
+
 
 import pandas as pd
 import numpy as np
 import numpy.linalg as la
 import random
 import csv
-
-# 异常类
-class ReliefError:
-    pass
 
 
 class Relief:
@@ -46,9 +37,9 @@ class Relief:
             col = self.__data[one]
             if (str(list(col)[0]).split(".")[0]).isdigit() or str(list(col)[0]).isdigit() or (str(list(col)[0]).split('-')[-1]).split(".")[-1].isdigit():
                 new_data[one] = self.__data[one]
-                # print '%s 是数值型' % one
+                # print('%s 是数值型' % one)
             else:
-                # print '%s 是离散型' % one
+                # print('%s 是离散型' % one)
                 keys = list(set(list(col)))
                 values = list(range(len(keys)))
                 new = dict(zip(keys, values))
