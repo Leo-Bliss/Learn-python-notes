@@ -33,15 +33,15 @@ class SetQIconFrame(QMainWindow):
 
    def onClick_button(self):
        sender = self.sender()
-       print(self.button1.text()+'被单击：退出app')
+       print(sender.text()+'被单击：退出app')
        app = QApplication.instance()
        app.quit()
 
    def center(self):
        screen = QDesktopWidget.screenGeometry()
        size = self.geometry()
-       new_left = (screen.width()-size.width())/2
-       new_top = (screen.height()-size.height())/2
+       new_left = (screen.width()-size.width())//2
+       new_top = (screen.height()-size.height())//2
        self.move(new_left,new_top())
 
 if __name__=='__main__':

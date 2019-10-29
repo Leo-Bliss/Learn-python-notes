@@ -1,3 +1,0 @@
-Jupyter环境搭建完成后：
-在.ipynb 文件所在的目录下打开一个终端，然后输入：
-jupyter nbconvert --to script *.ipynb 
