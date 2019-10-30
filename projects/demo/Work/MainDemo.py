@@ -37,7 +37,7 @@ class TableModel(QtCore.QAbstractTableModel):
                     return self._data[row][column]
 
 class SearchDialog(QDialog):
-    def __int__(self):
+    def __init__(self):
         super(SearchDialog,self).__init__()
         self.initUI()
 
@@ -71,25 +71,32 @@ class SearchDialog(QDialog):
         self.flayout.addItem(self.hbox4)
         self.setLayout(self.flayout)
 
+class AboutDialog(QDialog):
+    def __init__(self):
+        super(AboutDialog,self).__init__()
+        self.initUI()
+    def initUI(self):
+        pass
+
 
 class Demo(QMainWindow):
     def __init__(self):
         super(Demo,self).__init__()
         self.initUI()
     def initUI(self):
-        self.setWindowIcon(QIcon('D:\Learn-python-notes\projects\demo\icon\分析.png'))
+        self.setWindowIcon(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\分析.png'))
         self.setWindowTitle('Demo')
         #坐标，大小
         self.setGeometry(500,100,1000,900)
 
         #toolbar
         toolbar1 = self.addToolBar('File')
-        new = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\新建.png'),'new',self)
-        open = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\打开.png'),'open',self)
-        save = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\保存.png'),'save',self)
-        search = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\搜索.png'), 'search', self)
-        setting = QAction(QIcon('D:\Learn-python-notes\projects\demo\icon\设置.png'), 'setting', self)
-
+        new = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\新建.png'),'new',self)
+        open = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\打开.png'),'open',self)
+        save = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\保存.png'),'save',self)
+        search = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\搜索.png'), 'search', self)
+        setting = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\参数.png'), 'setting', self)
+        run = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\运行.png'), 'run', self)
         toolbar1.addAction(new)
         toolbar1.addAction(open)
         toolbar1.addAction(save)
@@ -97,12 +104,15 @@ class Demo(QMainWindow):
 
         toolbar2 = self.addToolBar('Setting')
         toolbar2.addAction(setting)
-        toolbar2.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        toolbar2.addAction(run)
 
-        toolbar1.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        # toolbar2.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        # toolbar1.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+
         #绑定事件
         open.triggered.connect(self.clickOpen)
         new.triggered.connect(self.clickCreate)
+        save.triggered.connect(self.clickSave)
         search.triggered.connect(self.searchData)
 
         #表格
@@ -117,18 +127,26 @@ class Demo(QMainWindow):
         self.setStatusBar(self.status)
         self.status.showMessage('欢迎使用中医药数据特征选择分析平台',5000)
 
+        #菜单栏
+        bar = self.menuBar()
+        #主菜单
+        file = bar.addMenu('File')
+        #子菜单
+        new = file.addAction('new')
+        open = file.addAction('open')
+        save = file.addAction('save')
+        exit = file.addAction('exit')
 
-        # #布局
-        # self.layoutWidget = QWidget(self)
-        # self.layoutWidget.setObjectName("layoutWidget")
-        # #x,y,width,height
-        # self.layoutWidget.setGeometry(QtCore.QRect(0, 50, 1000, 850))
-        # self.gridLayout = QGridLayout(self.layoutWidget)
-        # # self.tableview.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        # # self.textEdit1.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        # self.gridLayout.addWidget(self.tableview,0,0,1,1)
-        # # self.gridLayout.addWidget(self.textEdit1,0,1,1,4)
-        # # self.gridLayout.addWidget(self.textEdit2,0,2,1,4)
+        edit = bar.addMenu('Edit')
+        cut = edit.addAction('cut')
+        copy = edit.addAction('copy')
+        paste = edit.addAction('paste')
+        delete = edit.addAction('delete')
+
+        model = bar.addMenu('Model')
+        run = bar.addMenu('Run')
+        help = bar.addMenu('Help')
+        about = help.addAction('about')
 
         # # 背景图片
         # palette1 = QPalette()
@@ -139,9 +157,12 @@ class Demo(QMainWindow):
 
     def clickOpen(self):
         self.status.showMessage('打开文件',5000)
-        #self.file = QFileDialog.getOpenFileName(self,'打开文件','.')
+        # # self.file = QFileDialog.getOpenFileName(self,'打开文件','C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes')
+        # print(self.file)
         self.dialog = QFileDialog()
         self.dialog.setFileMode(QFileDialog.AnyFile)
+        dir = 'C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes'
+        self.dialog.setDirectory(dir)
         self.dialog.setFilter(QDir.Files)
         if self.dialog.exec_():
             file_name = self.dialog.selectedFiles()[0]
@@ -155,8 +176,16 @@ class Demo(QMainWindow):
 
     def searchData(self):
         self.dialog = SearchDialog()
-        self.dialog.initUI()
         self.dialog.show()
+
+    def clickSave(self):
+        file_path,self.save = QFileDialog.getSaveFileName(self,'保存文件','C:/',
+                                                          'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv);;txt(*.txt)')
+        # print(file_path)
+        #文件中写入数据
+        with open(file_path,'w',encoding='utf-8') as f:
+            pass
+
 
 
 
