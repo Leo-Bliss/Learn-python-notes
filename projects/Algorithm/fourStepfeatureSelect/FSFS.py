@@ -27,6 +27,7 @@ class FSFS:
         self.n_components = 3
         self.pls = PLSRegression(n_components=self.n_components,scale=True)
         self.path = path
+        self.M_star = 100
         pass
 
     def run(self,k=10):
@@ -75,7 +76,35 @@ class FSFS:
 
             # Filter
 
+            # X_train_mean = X_train.mean()
+            # y_train_mean = y_train.mean()
+            #
+            # print(X_train_mean)
+            # print(y_train_mean)
+
+            # y_train_var = np.var(y_train)
+            # print(np.var(y_train))
+            # print(type(y_train_var))
+            # X_train_var = np.var(X_train)
+            # print(X_train_var)
+            #
+            for label in X_train:
+                print(X_train[label])
+                # print(X_train[label].corr())
+                break
+            # print(X_train.corr(method='pearson'))
+
+
+
+
             break
+    #皮尔森相关系数
+    def pearson(self,vector1,vector2):
+        if(vector1.shape != vector2.shape):
+            raise Exception('Both vectors must be the same size')
+
+
+
 
     #RMSE
     def get_RMSE(self,y_predict,y_test):
