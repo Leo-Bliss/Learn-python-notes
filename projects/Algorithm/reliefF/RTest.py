@@ -14,7 +14,9 @@ import numpy.linalg as la
 import random
 import csv
 
-
+'''
+适用于多分类问题
+'''
 class Relief:
     def __init__(self, data_df, sample_rate, t, k):
         """
@@ -187,6 +189,8 @@ def pearsSim(vecA, vecB):
 if __name__ == '__main__':
     with open('./西瓜数据集30.csv','r',encoding= 'gbk') as f:
         data = pd.read_csv(f)[['色泽', '根蒂', '敲声', '纹理', '脐部', '触感', '密度', '含糖率', '好瓜']]
+        #print(type(data))
+
         # print(data)
         # f_csv = csv.reader(f)
         # for row in f_csv:
