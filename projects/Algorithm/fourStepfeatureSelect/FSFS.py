@@ -27,7 +27,7 @@ class FSFS:
         self.n_components = 3
         self.pls = PLSRegression(n_components=self.n_components,scale=True)
         self.path = path
-        self.M_star = 100
+        self.topK = 10
         pass
 
     def run(self,k=10):
@@ -38,13 +38,13 @@ class FSFS:
         header_list = list(df.columns.values)
         index_list = list(df.index.values)
         # print(header_list)
-        # print(indeX_list)
+        # print(index_list)
         #自变量X，因变量y
         X = df[header_list[:-1]] #<class 'pandas.core.frame.DataFrame'>
         # print(X.shape)
         y = df[header_list[-1]] #<class 'pandas.core.series.Series'>
         # print(y.shape)
-        # print(y.name)
+
         #将数据分为k份，k折交叉验证
         kf = KFold(n_splits=k,shuffle=True,random_state=0)
         for train_index,test_index in kf.split(X):
@@ -52,11 +52,15 @@ class FSFS:
             # print('+-------------------+')
             # print(test_index)
             X_train,y_train = X.values[train_index],y[train_index]
+            y_train_tmp = np.array(y_train)
 
             #转换为DataFrame格式便于计算
             X_train = pd.DataFrame(X_train,index=train_index,columns=header_list[:-1])
             y_train = pd.DataFrame(y_train.values,index=train_index,columns=[header_list[-1]])
+
             X_test,y_test = X.values[test_index],y[test_index]
+            y_test_tmp = np.array(y_test)
+
             X_test = pd.DataFrame(X_test,index=test_index,columns=header_list[:-1])
             y_test = pd.DataFrame(y_test.values,index=test_index,columns=[header_list[-1]])
 
@@ -76,37 +80,56 @@ class FSFS:
 
             # Filter
 
-            # X_train_mean = X_train.mean()
-            # y_train_mean = y_train.mean()
-            #
-            # print(X_train_mean)
-            # print(y_train_mean)
+            # #调python内置的方法
+            # X_train_y = X_train.copy()
+            # X_train_y[header_list[-1]] = y_train.values.copy()
+            # # print(X_train_y.corr()[header_list[-1]])
+            # dict_corr = (X_train_y.corr()[header_list[-1]]).to_dict()
+            # # print(dict_corr)
+            # lst_grade = sorted(dict_corr.items(),key=lambda x:abs(x[1]),reverse=True)
+            # print(lst_grade[1:11])
+            # print('....................................')
 
-            # y_train_var = np.var(y_train)
-            # print(np.var(y_train))
-            # print(type(y_train_var))
-            # X_train_var = np.var(X_train)
-            # print(X_train_var)
-            #
+            #用自己写的方法
+            #各特征与y1的相关系数，topK
+            dict = {}
             for label in X_train:
-                print(X_train[label])
-                # print(X_train[label].corr())
-                break
-            # print(X_train.corr(method='pearson'))
-
-
-
-
+                x_train_tmp = np.array(X_train[label])
+                #计算每个特征与y的相关系数
+                dict[label] = self.pearson(x_train_tmp,y_train_tmp)
+            lst = sorted(dict.items(),key=lambda x:abs(x[1]),reverse=True)
+            aim_lst = lst[:self.topK]
+            print(aim_lst)
+            print('+-----------------------------------------------------+')
             break
+
+
+
+
+
     #皮尔森相关系数
     def pearson(self,vector1,vector2):
         if(vector1.shape != vector2.shape):
             raise Exception('Both vectors must be the same size')
+        #均值
+        vector1_mean = vector1.mean()
+        vector2_mean = vector2.mean()
+        n = vector1.shape[0]
+        if n == 0:
+            raise Exception("The vector size is 0")
+        #协方差
+        cov = sum((vector1 - vector1_mean) * (vector2 - vector2_mean)) / n
+        #方差乘积开方
+        s = math.sqrt(np.var(vector1) * np.var(vector2))
+        #特判分母
+        if s == 0:
+            return 0.0
+            # raise  Exception('div 0')
+        r = cov / s
+        return r
 
 
-
-
-    #RMSE
+    #RMSE：均方根误差，越小越好
     def get_RMSE(self,y_predict,y_test):
         MSE = np.mean((y_test - y_predict) ** 2)
         RMSE = math.sqrt(MSE)
