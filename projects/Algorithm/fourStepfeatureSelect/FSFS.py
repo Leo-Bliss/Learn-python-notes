@@ -21,13 +21,15 @@ import pandas as pd
 import math
 # import xlrd
 from sklearn.cross_decomposition import PLSRegression
+from minepy import MINE
 
 class FSFS:
     def __init__(self,path):
         self.n_components = 3
         self.pls = PLSRegression(n_components=self.n_components,scale=True)
         self.path = path
-        self.topK = 10
+        self.topK = 100
+        self.step = 10
         pass
 
     def run(self,k=10):
@@ -90,6 +92,7 @@ class FSFS:
             # print(lst_grade[1:11])
             # print('....................................')
 
+            full_sets = []
             #用自己写的方法
             #各特征与y1的相关系数，topK
             dict = {}
@@ -99,11 +102,36 @@ class FSFS:
                 dict[label] = self.pearson(x_train_tmp,y_train_tmp)
             lst = sorted(dict.items(),key=lambda x:abs(x[1]),reverse=True)
             aim_lst = lst[:self.topK]
-            print(aim_lst)
+            full_sets.append(aim_lst)
+            # print(aim_lst)
             print('+-----------------------------------------------------+')
+
+            #特征的最大互信息系数
+            mine = MINE(alpha=0.6,c=15)
+            mic_dict = {}
+            for label in X_train:
+                x_train_tmp = np.array(X_train[label])
+                # 计算每个特征与y的MIC
+                mic_dict[label] = self.MIC(mine,x_train_tmp, y_train_tmp)
+            mic_lst = sorted(mic_dict.items(), key=lambda x: x[1], reverse=True)
+            aim_mic_lst = mic_lst[:self.topK]
+            full_sets.append(aim_mic_lst)
+            # print(aim_mic_lst)
+
+            # Wrapper
+            for full_set in full_sets:
+               for i in range(10,self.topK,10):
+                   now_set = full_set[:i]
+                   label_lst = [key for key, value in now_set]
+                   # print(label_lst)
+                   X_train_tmp = X_train[label_lst]
+                   # print(X_train_tmp)
+                   X_test_tmp = X_test[label_lst]
+                   self.pls.fit(X_train_tmp, y_train)
+                   y_test_predict_tmp = self.pls.predict(X_test_tmp)
+                   RMSE_tmp = self.get_RMSE(y_test_predict_tmp, y_test)
+                   print(RMSE_tmp)
             break
-
-
 
 
 
@@ -128,12 +156,19 @@ class FSFS:
         r = cov / s
         return r
 
-
     #RMSE：均方根误差，越小越好
     def get_RMSE(self,y_predict,y_test):
         MSE = np.mean((y_test - y_predict) ** 2)
         RMSE = math.sqrt(MSE)
         return RMSE
+
+    #MIC:最大互信息系数
+    def MIC(self,mine,x,y):
+        if(x.size !=  y.size):
+            raise Exception('Both must be same size')
+        mine.compute_score(x,y)
+        return mine.mic()
+
 
     #PLS
     def PLS(self):
@@ -142,7 +177,7 @@ class FSFS:
 
 
 
-if __name__ =='__main__':
+if __name__ == '__main__':
    path = r'C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\material\科研实践\数据\data1.xlsx'
    f = FSFS(path)
    f.run()
