@@ -30,6 +30,7 @@ class FSFS:
         self.path = path
         self.topK = 100
         self.step = 10
+        self.alp = 5
         pass
 
     def run(self,k=10):
@@ -49,6 +50,7 @@ class FSFS:
 
         #将数据分为k份，k折交叉验证
         kf = KFold(n_splits=k,shuffle=True,random_state=0)
+        final_set_list = [] #经过k次折叠后得的特征集 列表
         for train_index,test_index in kf.split(X):
             # print(train_index)
             # print('+-------------------+')
@@ -77,8 +79,8 @@ class FSFS:
             # print(type(y_test.values))
 
             #得到未开始特征选择的RMSE值
-            old_RMSE = self.get_RMSE(y_test_predict,y_test)
-            print(old_RMSE)
+            full_RMSE = self.get_RMSE(y_test_predict,y_test)
+            print(full_RMSE)
 
             # Filter
 
@@ -118,9 +120,13 @@ class FSFS:
             full_sets.append(aim_mic_lst)
             # print(aim_mic_lst)
 
+
             # Wrapper
+            KFold_list = [] #第k次折叠得到的特征集
             for full_set in full_sets:
-               for i in range(10,self.topK,10):
+               best_RMSE = 1e18
+               best_feature_num = 0
+               for i in range(10,self.topK+1,10):
                    now_set = full_set[:i]
                    label_lst = [key for key, value in now_set]
                    # print(label_lst)
@@ -130,8 +136,30 @@ class FSFS:
                    self.pls.fit(X_train_tmp, y_train)
                    y_test_predict_tmp = self.pls.predict(X_test_tmp)
                    RMSE_tmp = self.get_RMSE(y_test_predict_tmp, y_test)
-                   print(RMSE_tmp)
-            break
+                   if best_RMSE > RMSE_tmp:
+                       best_RMSE, best_feature_num = RMSE_tmp, i
+                   print(i,RMSE_tmp)
+               if best_RMSE <  full_RMSE:
+                   best_set_list = [label for label,r in full_set[:best_feature_num]]
+                   KFold_list += best_set_list
+                   # print(best_set_list)
+               print('+++++++++++++++++++++++++++++++++++++++')
+            # print(KFold_list)
+
+            #Union
+            final_set_list += list(set(KFold_list))
+
+       #Voting
+        final_features = set(final_set_list)
+        print('候选特征有%d个'%len(final_features))
+        feature_dict = {feature:final_set_list.count(feature) for feature in final_features}
+        best_features = []
+        for key,value in feature_dict.items():
+            if(value >= self.alp):
+                best_features.append(key)
+            print(key+':'+str(value))
+        print('最终投票出%d个特征'%len(best_features))
+        print(best_features)
 
 
 
