@@ -63,7 +63,7 @@ class FSFS:
             y_train = pd.DataFrame(y_train.values,index=train_index,columns=[header_list[-1]])
 
             X_test,y_test = X.values[test_index],y[test_index]
-            y_test_tmp = np.array(y_test)
+            # y_test_tmp = np.array(y_test)
 
             X_test = pd.DataFrame(X_test,index=test_index,columns=header_list[:-1])
             y_test = pd.DataFrame(y_test.values,index=test_index,columns=[header_list[-1]])
@@ -79,7 +79,7 @@ class FSFS:
             # print(type(y_test.values))
 
             #得到未开始特征选择的RMSE值
-            full_RMSE = self.get_RMSE(y_test_predict,y_test)
+            full_RMSE = get_RMSE(y_test_predict,y_test)
             print(full_RMSE)
 
             # Filter
@@ -97,12 +97,12 @@ class FSFS:
             full_sets = []
             #用自己写的方法
             #各特征与y1的相关系数，topK
-            dict = {}
+            pearson_dict = {}
             for label in X_train:
                 x_train_tmp = np.array(X_train[label])
                 #计算每个特征与y的相关系数
-                dict[label] = self.pearson(x_train_tmp,y_train_tmp)
-            lst = sorted(dict.items(),key=lambda x:abs(x[1]),reverse=True)
+                pearson_dict[label] = pearson(x_train_tmp,y_train_tmp)
+            lst = sorted(pearson_dict.items(),key=lambda x:abs(x[1]),reverse=True)
             aim_lst = lst[:self.topK]
             full_sets.append(aim_lst)
             # print(aim_lst)
@@ -114,7 +114,7 @@ class FSFS:
             for label in X_train:
                 x_train_tmp = np.array(X_train[label])
                 # 计算每个特征与y的MIC
-                mic_dict[label] = self.MIC(mine,x_train_tmp, y_train_tmp)
+                mic_dict[label] = MIC(mine,x_train_tmp, y_train_tmp)
             mic_lst = sorted(mic_dict.items(), key=lambda x: x[1], reverse=True)
             aim_mic_lst = mic_lst[:self.topK]
             full_sets.append(aim_mic_lst)
@@ -135,7 +135,7 @@ class FSFS:
                    X_test_tmp = X_test[label_lst]
                    self.pls.fit(X_train_tmp, y_train)
                    y_test_predict_tmp = self.pls.predict(X_test_tmp)
-                   RMSE_tmp = self.get_RMSE(y_test_predict_tmp, y_test)
+                   RMSE_tmp = get_RMSE(y_test_predict_tmp, y_test)
                    if best_RMSE > RMSE_tmp:
                        best_RMSE, best_feature_num = RMSE_tmp, i
                    print(i,RMSE_tmp)
@@ -150,63 +150,58 @@ class FSFS:
             final_set_list += list(set(KFold_list))
 
        #Voting
-        final_features = set(final_set_list)
-        print('候选特征有%d个'%len(final_features))
-        feature_dict = {feature:final_set_list.count(feature) for feature in final_features}
+        condidate_features = set(final_set_list)
+        print('候选特征有%d个'%len(condidate_features))
+        condidate_feature_dict = {feature:final_set_list.count(feature) for feature in condidate_features}
         best_features = []
-        for key,value in feature_dict.items():
+        for key,value in condidate_feature_dict.items():
             if(value >= self.alp):
                 best_features.append(key)
             print(key+':'+str(value))
         print('最终投票出%d个特征'%len(best_features))
         print(best_features)
 
+# RMSE：均方根误差，越小越好
+def get_RMSE(y_predict, y_test):
+    MSE = np.mean((y_test - y_predict) ** 2)
+    RMSE = math.sqrt(MSE)
+    return RMSE
 
+# MIC:最大互信息系数
+def MIC(mine, x, y):
+    if (x.size != y.size):
+        raise Exception('Both must be same size')
+    mine.compute_score(x, y)
+    return mine.mic()
 
-    #皮尔森相关系数
-    def pearson(self,vector1,vector2):
-        if(vector1.shape != vector2.shape):
-            raise Exception('Both vectors must be the same size')
-        #均值
-        vector1_mean = vector1.mean()
-        vector2_mean = vector2.mean()
-        n = vector1.shape[0]
-        if n == 0:
-            raise Exception("The vector size is 0")
-        #协方差
-        cov = sum((vector1 - vector1_mean) * (vector2 - vector2_mean)) / n
-        #方差乘积开方
-        s = math.sqrt(np.var(vector1) * np.var(vector2))
-        #特判分母
-        if s == 0:
-            return 0.0
-            # raise  Exception('div 0')
-        r = cov / s
-        return r
+# PLS
+def PLS():
+    pass
 
-    #RMSE：均方根误差，越小越好
-    def get_RMSE(self,y_predict,y_test):
-        MSE = np.mean((y_test - y_predict) ** 2)
-        RMSE = math.sqrt(MSE)
-        return RMSE
-
-    #MIC:最大互信息系数
-    def MIC(self,mine,x,y):
-        if(x.size !=  y.size):
-            raise Exception('Both must be same size')
-        mine.compute_score(x,y)
-        return mine.mic()
-
-
-    #PLS
-    def PLS(self):
-        pass
-
-
+ #皮尔森相关系数
+def pearson(vector1, vector2):
+    if (vector1.shape != vector2.shape):
+        raise Exception('Both vectors must be the same size')
+    # 均值
+    vector1_mean = vector1.mean()
+    vector2_mean = vector2.mean()
+    n = vector1.shape[0]
+    if n == 0:
+        raise Exception("The vector size is 0")
+    # 协方差
+    cov = sum((vector1 - vector1_mean) * (vector2 - vector2_mean)) / n
+    # 方差乘积开方
+    s = math.sqrt(np.var(vector1) * np.var(vector2))
+    # 特判分母
+    if s == 0:
+        return 0.0
+        # raise  Exception('div 0')
+    r = cov / s
+    return r
 
 
 if __name__ == '__main__':
-   path = r'C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\material\科研实践\数据\data1.xlsx'
+   path = r'\Learn-python-notes\material\科研实践\数据\data1.xlsx'
    f = FSFS(path)
    f.run()
 
