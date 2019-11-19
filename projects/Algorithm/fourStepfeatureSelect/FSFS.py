@@ -31,6 +31,8 @@ class FSFS:
         self.topK = 100
         self.step = 10
         self.alp = 5
+        self.y_old_predict = []
+        self.y_now_predict = []
         pass
 
     def run(self,k=10):
@@ -40,6 +42,9 @@ class FSFS:
         #第一行，第一列
         header_list = list(df.columns.values)
         index_list = list(df.index.values)
+
+        self.y_old_predict = [0] * len(index_list)
+        self.y_now_predict = [0] * len(index_list)
         # print(header_list)
         # print(index_list)
         #自变量X，因变量y
@@ -73,6 +78,13 @@ class FSFS:
             #代入测试集中的自变量得到预测的因变量
             y_test_predict = self.pls.predict(X_test)
 
+            #记录每一个预测的y
+            zipped = zip(test_index,y_test_predict)
+            for key,arr in tuple(zipped):
+                value = arr[0]
+                self.y_old_predict[key] = value
+            # if 1:
+            #     continue
             # print(y_test_predict)
             # print(type(y_test_predict))
             # print(y_test)
@@ -161,6 +173,41 @@ class FSFS:
         print('最终投票出%d个特征'%len(best_features))
         print(best_features)
 
+
+        #检验选出的特征
+        now_X = X[best_features]
+        print('+++++++++++++++++++++++++++++++++++++++++++++++++')
+
+        for train_index,test_index in kf.split(now_X):
+            # print(train_index)
+            # print('+-------------------+')
+            # print(test_index)
+            X_train,y_train = now_X.values[train_index],y[train_index]
+
+            #转换为DataFrame格式便于计算
+            X_train = pd.DataFrame(X_train,index=train_index,columns=best_features)
+            y_train = pd.DataFrame(y_train.values,index=train_index,columns=[header_list[-1]])
+
+            X_test,y_test = now_X.values[test_index],y[test_index]
+            X_test = pd.DataFrame(X_test,index=test_index,columns=best_features)
+
+            #训练得到相关参数，即得到拟合方程
+            self.pls.fit(X_train, y_train)
+            #代入测试集中的自变量得到预测的因变量
+            y_test_predict = self.pls.predict(X_test)
+            # 记录每一个预测的y
+            zipped = zip(test_index, y_test_predict)
+            for key, arr in tuple(zipped):
+                value = arr[0]
+                self.y_now_predict[key] = value
+
+        # print(self.y_now_predict)
+        # print('****************************')
+        # print(self.y_old_predict)
+        now_RMSE = get_RMSE(self.y_now_predict,y.values)
+        old_RMSE = get_RMSE(self.y_old_predict,y.values)
+        print(now_RMSE,old_RMSE)
+
 # RMSE：均方根误差，越小越好
 def get_RMSE(y_predict, y_test):
     MSE = np.mean((y_test - y_predict) ** 2)
@@ -201,7 +248,7 @@ def pearson(vector1, vector2):
 
 
 if __name__ == '__main__':
-   path = r'\Learn-python-notes\material\科研实践\数据\data1.xlsx'
+   path = r'C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\material\科研实践\数据\data1.xlsx'
    f = FSFS(path)
    f.run()
 
