@@ -24,7 +24,7 @@ import time
 pwd_list = []
 pwd = []
 
-#构造pwd_list
+#dfs构造pwd_list
 def dfs():
     global pwd
     if(len(pwd) == 5):
@@ -43,8 +43,9 @@ def dfs():
 def get_password(url,headers):
      global pwd_list
      with open('pwd.txt', 'w', encoding='utf-8') as f:
-         for pwd in pwd_list:
-             password = int(''.join(pwd))
+         for password in range(1000000):
+         # for pwd in pwd_list:
+         #     password = int(''.join(pwd))
              print(password)
              if(password < 13500):
                  continue
