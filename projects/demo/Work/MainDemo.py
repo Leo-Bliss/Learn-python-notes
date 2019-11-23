@@ -84,19 +84,21 @@ class Demo(QMainWindow):
         super(Demo,self).__init__()
         self.initUI()
     def initUI(self):
-        self.setWindowIcon(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\分析.png'))
+        path = r'C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon'
+        self.setWindowIcon(QIcon(path+'\分析.png'))
         self.setWindowTitle('Demo')
         #坐标，大小
         self.setGeometry(500,100,1000,900)
 
         #toolbar
         toolbar1 = self.addToolBar('File')
-        new = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\新建.png'),'new',self)
-        open = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\打开.png'),'open',self)
-        save = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\保存.png'),'save',self)
-        search = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\搜索.png'), 'search', self)
-        setting = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\参数.png'), 'setting', self)
-        run = QAction(QIcon('C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes\projects\demo\icon\运行.png'), 'run', self)
+
+        new = QAction(QIcon(path+'\新建.png'),'new',self)
+        open = QAction(QIcon(path+'\打开.png'),'open',self)
+        save = QAction(QIcon(path+'\保存.png'),'save',self)
+        search = QAction(QIcon(path+'\搜索.png'), 'search', self)
+        setting = QAction(QIcon(path+'\参数.png'), 'setting', self)
+        run = QAction(QIcon(path+'\运行.png'), 'run', self)
         toolbar1.addAction(new)
         toolbar1.addAction(open)
         toolbar1.addAction(save)
@@ -107,7 +109,7 @@ class Demo(QMainWindow):
         toolbar2.addAction(run)
 
         # toolbar2.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        # toolbar1.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        toolbar1.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         #绑定事件
         open.triggered.connect(self.clickOpen)
@@ -161,7 +163,7 @@ class Demo(QMainWindow):
         # print(self.file)
         self.dialog = QFileDialog()
         self.dialog.setFileMode(QFileDialog.AnyFile)
-        dir = 'C:\\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes'
+        dir = r'C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes'
         self.dialog.setDirectory(dir)
         self.dialog.setFilter(QDir.Files)
         if self.dialog.exec_():
