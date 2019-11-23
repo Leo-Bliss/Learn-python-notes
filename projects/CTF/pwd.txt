@@ -1,0 +1,7 @@
+password为: 13579
+flag的信息如下:
+ 
+flag{bugku-baopo-hah}
+ 
+</body> 
+</html>
