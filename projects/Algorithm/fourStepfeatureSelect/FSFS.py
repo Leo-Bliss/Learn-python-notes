@@ -19,7 +19,6 @@ from sklearn.model_selection import KFold
 import numpy as np
 import pandas as pd
 import math
-# import xlrd
 from sklearn.cross_decomposition import PLSRegression
 from minepy import MINE
 
@@ -48,9 +47,9 @@ class FSFS:
         # print(header_list)
         # print(index_list)
         #自变量X，因变量y
-        X = df[header_list[:-1]] #<class 'pandas.core.frame.DataFrame'>
+        X = df[header_list[:-1]]
         # print(X.shape)
-        y = df[header_list[-1]] #<class 'pandas.core.series.Series'>
+        y = df[header_list[-1]]
         # print(y.shape)
 
         #将数据分为k份，k折交叉验证
@@ -83,12 +82,7 @@ class FSFS:
             for key,arr in tuple(zipped):
                 value = arr[0]
                 self.y_old_predict[key] = value
-            # if 1:
-            #     continue
-            # print(y_test_predict)
-            # print(type(y_test_predict))
-            # print(y_test)
-            # print(type(y_test.values))
+
 
             #得到未开始特征选择的RMSE值
             full_RMSE = get_RMSE(y_test_predict,y_test)
@@ -208,6 +202,12 @@ class FSFS:
         old_RMSE = get_RMSE(self.y_old_predict,y.values)
         print(now_RMSE,old_RMSE)
 
+        compare = pd.DataFrame()
+        compare['y'] = y.values
+        compare['y_old'] = self.y_old_predict
+        compare['y_new'] = self.y_now_predict
+        print(compare)
+
 # RMSE：均方根误差，越小越好
 def get_RMSE(y_predict, y_test):
     MSE = np.mean((y_test - y_predict) ** 2)
@@ -221,9 +221,6 @@ def MIC(mine, x, y):
     mine.compute_score(x, y)
     return mine.mic()
 
-# PLS
-def PLS():
-    pass
 
  #皮尔森相关系数
 def pearson(vector1, vector2):
