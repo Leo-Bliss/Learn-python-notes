@@ -14,10 +14,14 @@ class Headers:
     def __init__(self):
        pass
     def get_headers(self,text):
-        headers = re.findall(r'(.*):(.*)',text)
-        # for key,value in headers:
-        #     print(key.strip()+':'+value.strip())
-        headers = dict((key.strip(),value.strip()) for key,value in headers)
+        line_list = text.split('\n')
+        headers_detail_list = []
+        for line in line_list:
+            line = line.strip().strip(':').split(':',maxsplit=1)
+            if line[0] != '':
+                headers_detail_list.append(line)
+        # print(headers_detail_list)
+        headers = dict(((key.strip(),value.strip())for key,value in headers_detail_list))
         return headers
 
 
