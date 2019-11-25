@@ -35,6 +35,9 @@ class QTreeWidgetDemo(QMainWindow):
         root1.setText(1,'根节点的数据')
         root1.setIcon(0,QIcon('./image/course.png'))
         self.tree.setColumnWidth(0,160)
+        #隐藏左边展开子节点的三角形
+        # self.tree.setRootIsDecorated(False)
+
 
         child1 = QTreeWidgetItem(root1)
         child1.setText(0,'子节点1')
@@ -57,7 +60,7 @@ class QTreeWidgetDemo(QMainWindow):
         child2_1.setIcon(0, QIcon('./image/bluetoothon.png'))
 
         #展开所有节点
-        self.tree.expandAll()
+        # self.tree.expandAll()
         self.tree.clicked.connect(self.onClickedTree)
 
     def onClickedTree(self,index):

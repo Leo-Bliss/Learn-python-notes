@@ -24,6 +24,8 @@ class StackWidgetDemo(QWidget):
         self.list.insertItem(0,'base information')
         self.list.insertItem(1, 'personal information')
         self.list.insertItem(2, 'course information')
+        #设置item间隔
+        self.list.setSpacing(5)
 
         self.stack1 = QWidget()
         self.stack2 = QWidget()

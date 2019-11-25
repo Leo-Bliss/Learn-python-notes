@@ -39,6 +39,7 @@ class TableView(QWidget):
         self.model.setItem(0,0,item11)
         self.model.setItem(0,1,item12)
         self.model.setItem(0,2,item13)
+        # self.model.appendRow([QStandardItem('1'),QStandardItem('2'),QStandardItem('3')])
         #不可编辑
         # self.tableview.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #布局

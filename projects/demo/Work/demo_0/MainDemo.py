@@ -167,10 +167,13 @@ class Demo(QMainWindow):
         self.dialog.setDirectory(dir)
         self.dialog.setFilter(QDir.Files)
         if self.dialog.exec_():
-            file_name = self.dialog.selectedFiles()[0]
-            #print(file_name)
-            # read_excel_xlsx(self,file_name,'Sheet1')
-            read_xlsx(self,file_name)
+            try:
+                file_name = self.dialog.selectedFiles()[0]
+                #print(file_name)
+                # read_excel_xlsx(self,file_name,'Sheet1')
+                read_xlsx(self,file_name)
+            except Exception as e:
+                pass
 
     def clickCreate(self):
         self.mode = QStandardItemModel(100,15000)
@@ -185,7 +188,10 @@ class Demo(QMainWindow):
                                                           'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv);;txt(*.txt)')
         # print(file_path)
         #文件中写入数据
-        with open(file_path,'w',encoding='utf-8') as f:
+        try:
+            with open(file_path,'w',encoding='utf-8') as f:
+                pass
+        except Exception as e:
             pass
 
 
