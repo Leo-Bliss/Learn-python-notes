@@ -3,7 +3,10 @@
 #QDesktopWiget
 import sys
 from PyQt5.QtWidgets import QMainWindow,QApplication,QDesktopWidget
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon,QPixmap,QPalette,QBrush
+
+from projects.demo.MainWindowExample import first_rc
+
 class CenterForm(QMainWindow):
     def __init__(self,parent=None):
         super(CenterForm, self).__init__(parent)
@@ -19,6 +22,10 @@ class CenterForm(QMainWindow):
         #set window statusBar
         self.status = self.statusBar()
         self.status.showMessage('status',5000)
+        palette =  QPalette()
+        pix = QPixmap(':/photos/space.png')
+        palette.setBrush(QPalette.Background,QBrush(pix))
+        self.setPalette(palette)
         #cnter
     def center(self):
         #screen coordinate
@@ -35,6 +42,6 @@ class CenterForm(QMainWindow):
 if __name__ =='__main__':
     app = QApplication(sys.argv)
     window  = CenterForm()
-    window.setWindowIcon(QIcon('./photos/qq.png'))
+    window.setWindowIcon(QIcon(':/photos/qq.png'))
     window.show()
     sys.exit(app.exec_())
