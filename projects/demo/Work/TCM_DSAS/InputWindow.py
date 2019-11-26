@@ -21,6 +21,9 @@ from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem
 from PyQt5.QtCore import Qt,QDir,QElapsedTimer,QAbstractTableModel
 import xlrd
 
+
+global_data = None
+
 class TableModel(QAbstractTableModel):
     def __init__(self, data, parent=None):
         super(TableModel, self).__init__(parent)
@@ -44,7 +47,6 @@ class WidgetDemo(QWidget):
     def __init__(self,mode):
         super(WidgetDemo,self).__init__()
         self.mode = mode
-        self.variable_list = []
         self.initUI(mode)
 
     def initUI(self,mode):
@@ -130,8 +132,6 @@ class WidgetDemo(QWidget):
             try:
                 file_name = self.dialog.selectedFiles()[0]
                 data = read_xlsx(file_name)
-                self.variable_list = data[0][:]
-                # print(self.variable_list)
                 # self.table_view.setModel(TableModel(data))
                 for i,rows in enumerate(data):
                     for j,cell in enumerate(rows):
@@ -141,17 +141,6 @@ class WidgetDemo(QWidget):
                 print(e)
                 pass
 
-    def getVariable(self):
-        return self.variable_list
-
-class WidgetDemo2(WidgetDemo):
-    def __init__(self,mode):
-        super(WidgetDemo2,self).__init__(mode)
-
-    def setVariable(self,variable_list):
-        for variable in variable_list:
-            if(variable != ''):
-                print(variable)
 
 
 
@@ -163,6 +152,8 @@ def read_xlsx(path):
     rows = len(sheet1.col_values(0))
     data = [sheet1.row_values(i) for i in range(rows)]
     # print(data)
+    global  global_data
+    global_data = data
     return data
     # print('init data need %s seconds' % (timer.elapsed() / 1000))
     # mode = TableModel(data)
@@ -183,11 +174,8 @@ class InputWindowDemo(QTabWidget):
         #tab1：显示全部，tab2：只显示变量
         self.mode1 = QStandardItemModel(100, 15000)
         self.tab1 = WidgetDemo(self.mode1)
-        var_list = self.tab1.getVariable()
-        print(var_list)
         self.mode2 = QStandardItemModel(15000, 1000)
-        self.tab2 = WidgetDemo2(self.mode2)
-        self.tab2.setVariable(var_list)
+        self.tab2 = WidgetDemo(self.mode2)
 
 
         self.addTab(self.tab1,'数据视图')
@@ -197,11 +185,24 @@ class InputWindowDemo(QTabWidget):
         self.setTabPosition(QTabWidget.TabPosition.South)
         #tab形状：设置为三角形：Triangular，圆角为：Rouned
         self.setTabShape(QTabWidget.Triangular)
+        self.currentChanged.connect(self.getCurrentTab)
 
-    def loadData(self):
-        pass
-
-
+    def getCurrentTab(self,index):
+        # print(index)
+        '''
+        数据从model中取出：
+        可以用index（row，col）.data().to…,
+        最后的to后面可以跟你想要的类型
+        '''
+        global global_data
+        if index == 1 and global_data is not None:
+            # print(global_data[0])
+            #当已经导入数据时设置变量视图
+            cnt = 0
+            for cell in global_data[0]:
+                if cell != '':
+                    self.mode2.setItem(cnt,0,QStandardItem(str(cell)))
+                    cnt += 1
 
 
 
