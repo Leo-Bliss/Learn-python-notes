@@ -130,12 +130,16 @@ class WidgetDemo(QWidget):
         self.dialog.setFilter(QDir.Files)
         if self.dialog.exec_():
             try:
+                timer = QElapsedTimer()
+                timer.start()
                 file_name = self.dialog.selectedFiles()[0]
                 data = read_xlsx(file_name)
+                print('init data need %s seconds' % (timer.elapsed() / 1000))
                 # self.table_view.setModel(TableModel(data))
                 for i,rows in enumerate(data):
                     for j,cell in enumerate(rows):
                         self.mode.setItem(i,j,QStandardItem(str(cell)))
+                print('input data need %s seconds' % (timer.elapsed() / 1000))
                 self.status_bar.showMessage('数据加载完毕！！！')
             except Exception as e:
                 print(e)

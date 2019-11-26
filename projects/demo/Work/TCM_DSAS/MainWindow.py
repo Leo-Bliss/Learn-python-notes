@@ -16,7 +16,8 @@ from PyQt5.QtWidgets import QListWidget,QListWidgetItem,QStackedWidget
 from PyQt5.QtWidgets import QHBoxLayout,QSizePolicy
 from PyQt5.QtGui import QIcon,QPixmap
 
-from projects.demo.Work.demo_0 import MainDemo as IP
+from projects.demo.Work.TCM_DSAS import InputWindow as IW
+from projects.demo.Work.TCM_DSAS import SelectionWindow as SW
 
 class MainWindowDemo(QWidget):
     def __init__(self):
@@ -48,8 +49,8 @@ class MainWindowDemo(QWidget):
 
         #创建各个功能子窗口
         self.interface_widget = QWidget()
-        self.input_widget = IP.Demo()
-        self.select_feature_widget = QWidget()
+        self.input_widget = IW.InputWindowDemo()
+        self.select_feature_widget = SW.SelectionWindowdemo()
         self.analyze_data_widget = QWidget()
         self.database_widget = QWidget()
         self.algorithm_widget = QWidget()
