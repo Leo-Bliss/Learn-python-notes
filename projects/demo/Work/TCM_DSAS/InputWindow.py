@@ -9,13 +9,167 @@
 '''
 导入数据界面：
 支持数据预处理，数据查找
+后期优化：动态加载数据，提升导入效率,设置加载数据进度条
 '''
 
 import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget
-from PyQt5.QtWidgets import QTableWidget,QTableView
+from PyQt5.QtWidgets import QTableView,QFileDialog,QHeaderView
+from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar
 from PyQt5.QtWidgets import QVBoxLayout
-from PyQt5.QtGui import QStandardItemModel
+from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem
+from PyQt5.QtCore import Qt,QDir,QElapsedTimer,QAbstractTableModel
+import xlrd
+
+class TableModel(QAbstractTableModel):
+    def __init__(self, data, parent=None):
+        super(TableModel, self).__init__(parent)
+        self._data = data
+
+    def rowCount(self, parent=None):
+        return len(self._data)
+
+    def columnCount(self, parent=None):
+        return len(self._data[0]) if self.rowCount() else 0
+
+    def data(self, index, role=Qt.DisplayRole):
+        if role == Qt.DisplayRole:
+            row = index.row()
+            if 0 <= row < self.rowCount():
+                column = index.column()
+                if 0 <= column < self.columnCount():
+                    return self._data[row][column]
+
+class WidgetDemo(QWidget):
+    def __init__(self,mode):
+        super(WidgetDemo,self).__init__()
+        self.mode = mode
+        self.variable_list = []
+        self.initUI(mode)
+
+    def initUI(self,mode):
+        self.resize(800,800)
+        #菜单栏
+        self.menu = QMenuBar()
+        self.file = self.menu.addMenu('文件')
+        self.edit = self.menu.addMenu('编辑')
+        self.view = self.menu.addMenu('视图')
+        self.help = self.menu.addMenu('帮助')
+        #各菜单下的子菜单
+
+        #文件菜单下的子菜单
+        self.new = self.file.addAction('新建')
+        self.open = self.file.addAction('打开')
+        self.save = self.file.addAction('保存')
+        self.save_as = self.file.addAction('另存为')
+
+        #编辑菜单下的子菜单
+        self.cut = self.edit.addAction('剪切')
+        self.copy = self.edit.addAction('复制')
+        self.paste = self.edit.addAction('粘贴')
+        self.delete = self.edit.addAction('删除')
+        self.find = self.edit.addAction('查找')
+        # self.replace = self.find.addAction('替换')
+        self.replace = self.edit.addAction('替换')
+
+        #视图菜单下的子菜单
+        self.view_tool_bar = self.view.addAction('工具栏')
+        self.view_status_bar = self.view.addAction('状态栏')
+
+        #帮助菜单下的子菜单
+        self.about = self.help.addAction('关于')
+
+        #工具栏
+        self.tool_bar = QToolBar()
+        self.tool_bar.addAction(self.new)
+        self.tool_bar.addAction(self.open)
+        self.tool_bar.addAction(self.save)
+        self.tool_bar.addAction(self.cut)
+        self.tool_bar.addAction(self.copy)
+        self.tool_bar.addAction(self.paste)
+        self.tool_bar.addAction(self.find)
+        self.tool_bar.addAction(self.replace)
+
+        #tool文本显示在下方
+        self.tool_bar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+
+
+        #表格
+        self.table_view = QTableView()
+        self.table_view.setModel(self.mode)
+
+        #状态栏
+        self.status_bar = QStatusBar()
+        self.status_bar.showMessage('这是一个状态栏')
+
+
+        #创建布局
+        layout = QVBoxLayout()
+        layout.addWidget(self.menu)
+        layout.addWidget(self.tool_bar)
+        layout.addWidget(self.table_view)
+        layout.addWidget(self.status_bar)
+        self.setLayout(layout)
+
+        #关联信号
+        self.open.triggered.connect(self.clickOpen)
+
+        #美化
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./image/打开.png'), QIcon.Normal, QIcon.Off)
+        self.open.setIcon(icon)
+
+    def clickOpen(self):
+        self.status_bar.showMessage('打开文件',5000)
+        self.dialog = QFileDialog()
+        self.dialog.setFileMode(QFileDialog.AnyFile)
+        dir = r'C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes'
+        self.dialog.setDirectory(dir)
+        self.dialog.setFilter(QDir.Files)
+        if self.dialog.exec_():
+            try:
+                file_name = self.dialog.selectedFiles()[0]
+                data = read_xlsx(file_name)
+                self.variable_list = data[0][:]
+                # print(self.variable_list)
+                # self.table_view.setModel(TableModel(data))
+                for i,rows in enumerate(data):
+                    for j,cell in enumerate(rows):
+                        self.mode.setItem(i,j,QStandardItem(str(cell)))
+                self.status_bar.showMessage('数据加载完毕！！！')
+            except Exception as e:
+                print(e)
+                pass
+
+    def getVariable(self):
+        return self.variable_list
+
+class WidgetDemo2(WidgetDemo):
+    def __init__(self,mode):
+        super(WidgetDemo2,self).__init__(mode)
+
+    def setVariable(self,variable_list):
+        for variable in variable_list:
+            if(variable != ''):
+                print(variable)
+
+
+
+def read_xlsx(path):
+    # timer = QElapsedTimer()
+    # timer.start()
+    workbook = xlrd.open_workbook(path)
+    sheet1 = workbook.sheet_by_index(0)
+    rows = len(sheet1.col_values(0))
+    data = [sheet1.row_values(i) for i in range(rows)]
+    # print(data)
+    return data
+    # print('init data need %s seconds' % (timer.elapsed() / 1000))
+    # mode = TableModel(data)
+    # print('input data need %s seconds' % (timer.elapsed() / 1000))
+    # return mode
+
+
 
 class InputWindowDemo(QTabWidget):
     def __init__(self):
@@ -27,8 +181,14 @@ class InputWindowDemo(QTabWidget):
 
         #创建两个窗口
         #tab1：显示全部，tab2：只显示变量
-        self.tab1 = QWidget()
-        self.tab2 = QWidget()
+        self.mode1 = QStandardItemModel(100, 15000)
+        self.tab1 = WidgetDemo(self.mode1)
+        var_list = self.tab1.getVariable()
+        print(var_list)
+        self.mode2 = QStandardItemModel(15000, 1000)
+        self.tab2 = WidgetDemo2(self.mode2)
+        self.tab2.setVariable(var_list)
+
 
         self.addTab(self.tab1,'数据视图')
         self.addTab(self.tab2,'变量视图')
@@ -38,29 +198,8 @@ class InputWindowDemo(QTabWidget):
         #tab形状：设置为三角形：Triangular，圆角为：Rouned
         self.setTabShape(QTabWidget.Triangular)
 
-        #添加表格
-        self.mode = QStandardItemModel(100, 15000)
-        self.initTab1()
-        self.initTab2()
-
-    def initTab1(self):
-        self.tableview1 = QTableView()
-        self.tableview1.setModel(self.mode)
-        vlayout = QVBoxLayout()
-        vlayout.addWidget(self.tableview1)
-        self.tab1.setLayout(vlayout)
-
-    def initTab2(self):
-        self.tableview2 = QTableView()
-        self.tableview2.setModel(self.mode)
-        vlayout = QVBoxLayout()
-        vlayout.addWidget(self.tableview2)
-        self.tab2.setLayout(vlayout)
-
     def loadData(self):
         pass
-
-
 
 
 
