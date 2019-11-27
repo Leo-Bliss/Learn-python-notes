@@ -16,6 +16,9 @@ from PyQt5.QtWidgets import QLabel,QComboBox,QTextEdit,QLineEdit
 from PyQt5.QtWidgets import QPushButton,QToolBar,QAction
 from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout
 from PyQt5.QtGui import QIcon
+from projects.demo.Work.TCM_DSAS import SetParameterDialog
+from projects.demo.Work.TCM_DSAS.algorithm import FSFS
+import os
 
 class SelectionWindowdemo(QWidget):
     def __init__(self):
@@ -25,6 +28,7 @@ class SelectionWindowdemo(QWidget):
     def initUI(self):
         self.resize(800,800)
         self.setWindowTitle('特征选择窗口')
+        self.parameter_dict = None
 
         self.tool_bar = QToolBar()
         self.set_parameter = QAction(QIcon('./image/参数设置.png'),'设置参数',self)
@@ -58,11 +62,13 @@ class SelectionWindowdemo(QWidget):
         vlayout.addWidget(self.text_edit)
         self.setLayout(vlayout)
 
-        self.comb1.currentIndexChanged.connect(self.selectionChange)
+        self.comb1.currentIndexChanged.connect(self.selectionChange1)
         # self.comb2.currentIndexChanged(self.selecttionChange2)
         self.button.clicked.connect(self.clickSearch)
+        self.set_parameter.triggered.connect(self.getParameter)
+        self.run.triggered.connect(self.runProcess)
 
-
+    #选择特征选择的算法
     def selectionChange1(self):
         if self.comb1.currentText() == 'FSFS':
             text = 'four steps for features selection:\nFliter,Semi_weapper,Union,Voting.'
@@ -70,18 +76,43 @@ class SelectionWindowdemo(QWidget):
         else:
             self.text_edit.setText(self.comb1.currentText())
 
-
+    #搜索算法或文本内容
     def clickSearch(self):
         text = self.line_edit.text()
         if self.comb2.currentText() == '算法':
             index = self.comb1.findText(text)
             if index != -1:
-                self.comb.setCurrentIndex(index)
+                self.comb1.setCurrentIndex(index)
             else:
-                print('没有找到{}'.format(text))
                 print('没有找到{}'.format(text))
         else:
             pass
+    #获取参数对话框的相关参数
+    def getParameter(self):
+        self.dialog = SetParameterDialog.ParamerterDemo()
+        self.dialog.signal.sender.connect(self.setParameter)
+        self.dialog.show()
+
+    #设置算法的参数
+    def setParameter(self,dic):
+         print(dic)
+         self.parameter_dict = dic
+         self.text_edit.setText(str(dic))
+
+    def runProcess(self):
+        file_name = 'data1.xlsx'
+        path = '{0}\data\{1}'.format(os.path.abspath('.'), file_name)
+        try:
+            print('特征选择中...')
+            f = FSFS.FSFSDemo(path,self.parameter_dict)
+            res_list = f.run()
+            str_res = ',\n'.join(res_list)
+            res = '最终选择出的特征共{0}个:\n{1}'.format(len(res_list),str_res)
+            self.text_edit.setText(res)
+            print('特征选择完成！！！')
+        except Exception as e:
+            print(e)
+
 
 
 
