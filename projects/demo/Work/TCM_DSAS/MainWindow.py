@@ -14,7 +14,7 @@ import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QLabel,QPushButton
 from PyQt5.QtWidgets import QListWidget,QListWidgetItem,QStackedWidget
 from PyQt5.QtWidgets import QHBoxLayout,QSizePolicy
-from PyQt5.QtGui import QIcon,QPixmap
+from PyQt5.QtGui import QIcon,QPixmap,QPalette,QBrush
 
 from projects.demo.Work.TCM_DSAS import InputWindow as IW
 from projects.demo.Work.TCM_DSAS import SelectionWindow as SW
@@ -85,6 +85,12 @@ class MainWindowDemo(QWidget):
         self.list_widget.setFrameShape(False)
         #icon
         self.setWindowIcon(QIcon('./image/分析.png'))
+        #背景图片
+        # palette = QPalette()
+        # pix = QPixmap(r'./')
+        # pix.scaled(self.width(),self.height())
+        # palette.setBrush(QPalette.Background,QBrush(pix))
+        # self.setPalette(palette)
 
         #关联单击信号
         self.list_widget.currentRowChanged.connect(self.onClickedListWidget)
