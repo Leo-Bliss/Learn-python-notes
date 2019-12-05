@@ -20,7 +20,7 @@ zipFile:
 def createPasswordFile(n):
     left =  10 ** (n-1)
     right = 10 ** n
-    with open('password.txt','w',encoding='utf-8') as f:
+    with open('password1.txt','w',encoding='utf-8') as f:
         for password in range(left,right):
             f.write(str(password)+'\n')
 
@@ -45,7 +45,7 @@ def crackZip(path,n):
     createPasswordFile(n)
     zip_file = ZipFile(path,'r')
     # print(zip_file.namelist())
-    f = open(r'./password.txt','r',encoding='utf-8')
+    f = open(r'./password1.txt','r',encoding='utf-8')
     for line in f.readlines():
         password = line.strip('\n')
         guess = extractFile(zip_file,password)
@@ -55,8 +55,8 @@ def crackZip(path,n):
 
 
 if __name__=='__main__':
-    path = r'./test.zip'
-    crackZip(path,6)
+    path = r'D:\vmshare\flag.rar'
+    crackZip(path,3)
 
 
 
