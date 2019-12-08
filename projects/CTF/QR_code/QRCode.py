@@ -9,7 +9,7 @@
 import qrcode
 from  pyzbar import  pyzbar
 from PIL import  Image
-
+import cv2
 
 #从中心开始裁减图片
 def cut_image(image, x, y):
@@ -18,6 +18,30 @@ def cut_image(image, x, y):
     new_x2,new_y2 = x_center + x//2,y_center + y//2
     new_image = image.crop((new_x1, new_y1, new_x2, new_y2))
     return new_image
+
+
+def decodeDisplay(image):
+    barcodes = pyzbar.decode(image)
+    for barcode in barcodes:
+        # 提取二维码的边界框的位置
+        (x, y, w, h) = barcode.rect
+        # 画出图像中条形码的边界框
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        #提取二维码中的数据
+        barcodeData = barcode.data.decode("utf-8")
+        barcodeType = barcode.type
+
+        # 输出图像上条形码的数据和条形码类型
+        text = "{} ({})".format(barcodeData, barcodeType)
+        cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                    .5, (0, 0, 125), 2)
+
+        # 向终端打印条形码数据和条形码类型
+        print("[INFO] Found {} barcode: {}".format(barcodeType, barcodeData))
+    return image
+
+
+
 
 class QRCodeDemo(object):
     def __init__(self):
@@ -53,6 +77,19 @@ class QRCodeDemo(object):
         final_image= Image.blend(image,new_background,alpha=alp)
         return final_image
 
+    #打开摄像头扫描二维码
+    def online_scan(self):
+        camera = cv2.VideoCapture(0)
+        while True:
+            ret,frame = camera.read()
+            gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+            img = decodeDisplay(gray)
+            cv2.waitKey(5)
+            cv2.imshow("camera", img)
+
+        camera.release()
+        cv2.destroyAllWindows()
+
 
 if __name__=='__main__':
     qr = QRCodeDemo()
@@ -70,6 +107,7 @@ if __name__=='__main__':
     # cp_image.save('./images/0_1.jpg')
     # image = Image.open('./images/0_1.jpg')
     # qr.scan(image)
+    # qr.online_scan()
 
 
 
