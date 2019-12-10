@@ -14,35 +14,15 @@
 
 import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget
-from PyQt5.QtWidgets import QTableView,QFileDialog,QHeaderView
+from PyQt5.QtWidgets import QTableView,QFileDialog
 from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem
-from PyQt5.QtCore import Qt,QDir,QElapsedTimer,QAbstractTableModel
+from PyQt5.QtCore import Qt,QDir,QElapsedTimer
+import pandas as pd
+import numpy as np
 import xlrd
-from projects.demo.SignalSlot.CustomSignal1 import MyTypeSignal
 
-
-global_data = None
-
-class TableModel(QAbstractTableModel):
-    def __init__(self, data, parent=None):
-        super(TableModel, self).__init__(parent)
-        self._data = data
-
-    def rowCount(self, parent=None):
-        return len(self._data)
-
-    def columnCount(self, parent=None):
-        return len(self._data[0]) if self.rowCount() else 0
-
-    def data(self, index, role=Qt.DisplayRole):
-        if role == Qt.DisplayRole:
-            row = index.row()
-            if 0 <= row < self.rowCount():
-                column = index.column()
-                if 0 <= column < self.columnCount():
-                    return self._data[row][column]
 
 class WidgetDemo(QWidget):
     def __init__(self,mode):
@@ -127,7 +107,7 @@ class WidgetDemo(QWidget):
         self.status_bar.showMessage('打开文件',5000)
         self.dialog = QFileDialog()
         self.dialog.setFileMode(QFileDialog.AnyFile)
-        dir = r'C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Learn-python-notes'
+        dir = r'./data/'
         self.dialog.setDirectory(dir)
         self.dialog.setFilter(QDir.Files)
         if self.dialog.exec_():
@@ -135,15 +115,27 @@ class WidgetDemo(QWidget):
                 timer = QElapsedTimer()
                 timer.start()
                 file_name = self.dialog.selectedFiles()[0]
-                data = read_xlsx(file_name)
-                self.data = data
+                df = pd.read_excel(file_name, sheet_name='Sheet1', index_col=0)
+                self.data = df
                 print('init data need %s seconds' % (timer.elapsed() / 1000))
-                # self.table_view.setModel(TableModel(data))
+
                 self.mode = QStandardItemModel()
-                for rows in data:
+                train_data = np.array(df)
+                data_list = train_data.tolist()
+
+                column_list = [''] + list(df.columns.values)
+                index_list = list(df.index.values)
+
+                #第一行
+                row = [QStandardItem(str(cell)) for cell in column_list]
+                self.mode.appendRow(row)
+                #其他行
+                for i,rows in enumerate(data_list):
                     row = [QStandardItem(str(cell)) for cell in rows]
+                    row.insert(0,QStandardItem(str(index_list[i])))
                     self.mode.appendRow(row)
                 self.table_view.setModel(self.mode)
+
                 print('input data need %s seconds' % (timer.elapsed() / 1000))
                 self.status_bar.showMessage('数据加载完毕！！！')
             except Exception as e:
@@ -154,20 +146,12 @@ class WidgetDemo(QWidget):
 
 
 def read_xlsx(path):
-    # timer = QElapsedTimer()
-    # timer.start()
     workbook = xlrd.open_workbook(path)
     sheet1 = workbook.sheet_by_index(0)
     rows = len(sheet1.col_values(0))
     data = [sheet1.row_values(i) for i in range(rows)]
-    # print(data)
-    global  global_data
-    global_data = data
     return data
-    # print('init data need %s seconds' % (timer.elapsed() / 1000))
-    # mode = TableModel(data)
-    # print('input data need %s seconds' % (timer.elapsed() / 1000))
-    # return mode
+
 
 
 
@@ -178,7 +162,6 @@ class InputWindowDemo(QTabWidget):
 
     def initUI(self):
         self.setGeometry(500,100,1000,900)
-        self.send = MyTypeSignal()
 
         #创建两个窗口
         #tab1：显示全部，tab2：只显示变量
@@ -198,18 +181,14 @@ class InputWindowDemo(QTabWidget):
         self.currentChanged.connect(self.getCurrentTab)
 
     def getCurrentTab(self,index):
-        # print(index)
-        '''
-        数据从model中取出：
-        可以用index（row，col）.data().to…,
-        最后的to后面可以跟你想要的类型
-        '''
-        global global_data
-        if index == 1 and global_data is not None:
-            # print(global_data[0])
-            #当已经导入数据时设置变量视图
+        #得到数据视图中的数据
+        all_data = self.tab1.data
+
+        # print(all_data[0])
+        # 当已经导入数据时设置变量视图
+        if index == 1 and all_data is not None:
             cnt = 0
-            for cell in global_data[0]:
+            for cell in all_data[0]:
                 if cell != '':
                     self.mode2.setItem(cnt,0,QStandardItem(str(cell)))
                     cnt += 1

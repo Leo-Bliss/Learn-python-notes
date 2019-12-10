@@ -11,7 +11,7 @@
 有设置参数功能
 '''
 import sys
-from PyQt5.QtWidgets import QApplication,QWidget
+from PyQt5.QtWidgets import QApplication,QWidget,QMessageBox
 from PyQt5.QtWidgets import QLabel,QComboBox,QTextEdit,QLineEdit
 from PyQt5.QtWidgets import QPushButton,QToolBar,QAction
 from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout
@@ -20,7 +20,6 @@ from projects.demo.Work.TCM_DSAS import SetParameterDialog
 from projects.demo.Work.TCM_DSAS.algorithm import FSFS
 from projects.demo.Work.TCM_DSAS.algorithm import Lasso
 import os
-from projects.demo.SignalSlot.CustomSignal1 import MySlot
 
 class SelectionWindowdemo(QWidget):
     def __init__(self):
@@ -31,7 +30,8 @@ class SelectionWindowdemo(QWidget):
         self.resize(800,800)
         self.setWindowTitle('特征选择窗口')
         self.parameter_dict = None
-        self.slot = MySlot()
+        self.df = None
+
 
         self.tool_bar = QToolBar()
         self.set_parameter = QAction(QIcon('./image/参数设置.png'),'设置参数',self)
@@ -106,11 +106,12 @@ class SelectionWindowdemo(QWidget):
          self.run.setEnabled(True)
 
     def runProcess(self):
-        file_name = 'data1.xlsx'
-        path = '{0}\data\{1}'.format(os.path.abspath('.'), file_name)
+        if self.df is None:
+            QMessageBox.critical(self,'错误','请先导入数据',QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
+            return
         try:
             print('特征选择中...')
-            f = FSFS.FSFSDemo(path,self.parameter_dict)
+            f = FSFS.FSFSDemo(self.df,self.parameter_dict)
             res_list = f.run()
             str_res = ',\n'.join(res_list)
             res = '最终选择出的特征共{0}个:\n{1}'.format(len(res_list),str_res)
