@@ -18,7 +18,9 @@ from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout
 from PyQt5.QtGui import QIcon
 from projects.demo.Work.TCM_DSAS import SetParameterDialog
 from projects.demo.Work.TCM_DSAS.algorithm import FSFS
+from projects.demo.Work.TCM_DSAS.algorithm import Lasso
 import os
+from projects.demo.SignalSlot.CustomSignal1 import MySlot
 
 class SelectionWindowdemo(QWidget):
     def __init__(self):
@@ -29,6 +31,7 @@ class SelectionWindowdemo(QWidget):
         self.resize(800,800)
         self.setWindowTitle('特征选择窗口')
         self.parameter_dict = None
+        self.slot = MySlot()
 
         self.tool_bar = QToolBar()
         self.set_parameter = QAction(QIcon('./image/参数设置.png'),'设置参数',self)
@@ -36,28 +39,31 @@ class SelectionWindowdemo(QWidget):
         self.tool_bar.addAction(self.set_parameter)
         self.tool_bar.addAction(self.run)
 
-        self.lable = QLabel('请选择算法:')
+        self.lable = QLabel('选择算法:')
         self.comb1 = QComboBox()
         self.comb1.addItems(['FSFS','Lasso'])
-        self.comb2 = QComboBox()
-        self.comb2.addItems(['算法','内容'])
+        # self.comb2 = QComboBox()
+        # self.comb2.addItems(['算法','内容'])
         self.line_edit = QLineEdit()
         self.button = QPushButton('搜索')
 
         hlayout = QHBoxLayout()
         hlayout.addWidget(self.lable)
         hlayout.addWidget(self.comb1)
-        hlayout.addWidget(self.tool_bar)
-        hlayout.addWidget(self.comb2)
+
+        # hlayout.addWidget(self.comb2)
         hlayout.addWidget(self.line_edit)
         hlayout.addWidget(self.button)
+        hlayout.addWidget(self.tool_bar)
+        hlayout.addStretch(3)
+        hlayout.setSpacing(10)
 
         self.text_edit = QTextEdit()
-        self.text_edit.setText('four steps for features selection:\nFliter,Semi_weapper,Union,Voting.')
+        self.text_edit.setText('Four steps for features selection:\nFliter,Semi_weapper,Union,Voting.')
         self.text_edit.setReadOnly(True)
+        self.run.setEnabled(False)
 
         vlayout = QVBoxLayout()
-        # vlayout.addWidget(self.tool_bar)
         vlayout.addItem(hlayout)
         vlayout.addWidget(self.text_edit)
         self.setLayout(vlayout)
@@ -76,17 +82,16 @@ class SelectionWindowdemo(QWidget):
         else:
             self.text_edit.setText(self.comb1.currentText())
 
-    #搜索算法或文本内容
+    #搜索算法
     def clickSearch(self):
         text = self.line_edit.text()
-        if self.comb2.currentText() == '算法':
-            index = self.comb1.findText(text)
-            if index != -1:
-                self.comb1.setCurrentIndex(index)
-            else:
-                print('没有找到{}'.format(text))
+        index = self.comb1.findText(text)
+        if index != -1:
+            self.comb1.setCurrentIndex(index)
         else:
-            pass
+            print('没有找到{}'.format(text))
+
+
     #获取参数对话框的相关参数
     def getParameter(self):
         self.dialog = SetParameterDialog.ParamerterDemo()
@@ -98,6 +103,7 @@ class SelectionWindowdemo(QWidget):
          print(dic)
          self.parameter_dict = dic
          self.text_edit.setText(str(dic))
+         self.run.setEnabled(True)
 
     def runProcess(self):
         file_name = 'data1.xlsx'
@@ -112,6 +118,7 @@ class SelectionWindowdemo(QWidget):
             print('特征选择完成！！！')
         except Exception as e:
             print(e)
+
 
 
 
