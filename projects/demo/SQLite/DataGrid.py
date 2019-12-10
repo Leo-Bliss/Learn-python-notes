@@ -42,7 +42,8 @@ def findrow(i):
 
 #增加完数据向上单击即可添加入数据库
 def addrow():
-    ret = model.insertRows(model.rowCount(),1)
+    #当前行的下方添加一行
+    ret = model.insertRows(view.currentIndex().row()+1,1)
     print('insertRow=%s'%str(ret))
 
 

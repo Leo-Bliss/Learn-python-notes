@@ -15,7 +15,7 @@ class Splash(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.resize(500,500)
+        self.resize(600,600)
         # CREATE THE TABLE
         self.table = QTableView(self)  # SELECTING THE VIEW
         self.table.setGeometry(0, 0, 575, 575)
@@ -67,10 +67,11 @@ class Splash(QWidget):
             print()
 
     def addRow(self):
-        self.model.insertRows(self.model.rowCount(),1)
+        # 当前行的下方添加一行
+        ret = self.model.insertRows(self.table.currentIndex().row() + 1, 1)
 
     def addColumn(self):
-        self.model.insertColumns(self.model.columnCount(), 1)
+        self.model.insertColumns(self.table.currentIndex().column() + 1, 1)
 
 
 
@@ -98,19 +99,19 @@ class Splash(QWidget):
 
 
 if __name__ == '__main__':
-    # import sys
-    # app = QApplication(sys.argv)
-    # ex = Splash()
-    # ex.show()
-    # sys.exit(app.exec_())
-    data = [[1,2,3] for i in range(3)]
-    print(data)
-    data[1][1] = 5
-    print(data)
-    print(data[1][1])
-    import numpy as np
-    num = np.array(data)
-    print(num)
-    print(num[1,1])
-    num[2,1] = 6
-    print(num)
+    import sys
+    app = QApplication(sys.argv)
+    ex = Splash()
+    ex.show()
+    sys.exit(app.exec_())
+    # data = [[1,2,3] for i in range(3)]
+    # print(data)
+    # data[1][1] = 5
+    # print(data)
+    # print(data[1][1])
+    # import numpy as np
+    # num = np.array(data)
+    # print(num)
+    # print(num[1,1])
+    # num[2,1] = 6
+    # print(num)
