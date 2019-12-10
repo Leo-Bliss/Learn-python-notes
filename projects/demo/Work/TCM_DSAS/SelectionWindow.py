@@ -19,7 +19,8 @@ from PyQt5.QtGui import QIcon
 from projects.demo.Work.TCM_DSAS import SetParameterDialog
 from projects.demo.Work.TCM_DSAS.algorithm import FSFS
 from projects.demo.Work.TCM_DSAS.algorithm import Lasso
-import os
+
+import pandas as pd
 
 class SelectionWindowdemo(QWidget):
     def __init__(self):
@@ -30,7 +31,7 @@ class SelectionWindowdemo(QWidget):
         self.resize(800,800)
         self.setWindowTitle('特征选择窗口')
         self.parameter_dict = None
-        self.df = None
+        self.data = None
 
 
         self.tool_bar = QToolBar()
@@ -76,11 +77,16 @@ class SelectionWindowdemo(QWidget):
 
     #选择特征选择的算法
     def selectionChange1(self):
+        text = 'Features selection information'
         if self.comb1.currentText() == 'FSFS':
             text = 'four steps for features selection:\nFliter,Semi_weapper,Union,Voting.'
-            self.text_edit.setText(text)
-        else:
-            self.text_edit.setText(self.comb1.currentText())
+        elif self.comb1.currentText() == 'Lasso':
+            text = '''
+                  Lasso的全称叫做Least absolute shrinkage and selection operator，
+                  直译过来为最小收缩与选择算子。
+                  其本质就是在常规的线性回归的基础上对参数加了一个L1正则化约束。
+                 '''
+        self.text_edit.setText(text)
 
     #搜索算法
     def clickSearch(self):
@@ -94,7 +100,11 @@ class SelectionWindowdemo(QWidget):
 
     #获取参数对话框的相关参数
     def getParameter(self):
-        self.dialog = SetParameterDialog.ParamerterDemo()
+        if self.comb1.currentText() == 'FSFS':
+            self.dialog = SetParameterDialog.ParamerterDemo()
+        elif self.comb1.currentText() == 'Lasso':
+            self.dialog = SetParameterDialog.ParamerterDemo2()
+
         self.dialog.signal.sender.connect(self.setParameter)
         self.dialog.show()
 
@@ -106,13 +116,18 @@ class SelectionWindowdemo(QWidget):
          self.run.setEnabled(True)
 
     def runProcess(self):
-        if self.df is None:
-            QMessageBox.critical(self,'错误','请先导入数据',QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
+        if self.data is None:
+            QMessageBox.critical(self,'错误','请先导入数据',QMessageBox.Yes,QMessageBox.No)
             return
         try:
+            self.df = list_to_DataFrame(self.data)
             print('特征选择中...')
-            f = FSFS.FSFSDemo(self.df,self.parameter_dict)
-            res_list = f.run()
+            res_list = []
+            if self.comb1.currentText() == 'FSFS':
+                f = FSFS.FSFSDemo(self.df,self.parameter_dict)
+                res_list = f.run()
+            elif self.comb1.currentText() == 'Lasso':
+                res_list = Lasso.lasso(self.df,self.parameter_dict)
             str_res = ',\n'.join(res_list)
             res = '最终选择出的特征共{0}个:\n{1}'.format(len(res_list),str_res)
             self.text_edit.setText(res)
@@ -123,7 +138,14 @@ class SelectionWindowdemo(QWidget):
 
 
 
-
+def list_to_DataFrame(lst):
+    df = pd.DataFrame(lst)
+    index_list = list(df.iloc[1:,0])
+    column_list = list(df.iloc[0,1:])
+    data = df.iloc[1:,1:]
+    data.index = index_list
+    data.columns = column_list
+    return data
 
 
 

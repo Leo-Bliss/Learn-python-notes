@@ -237,6 +237,15 @@ def pearson(vector1, vector2):
     r = cov / s
     return r
 
+def read_xlsx(path):
+    import xlrd
+    workbook = xlrd.open_workbook(path)
+    sheet1 = workbook.sheet_by_index(0)
+    rows = len(sheet1.col_values(0))
+    data = [sheet1.row_values(i) for i in range(rows)]
+    return data
+
+
 
 if __name__ == '__main__':
    os.chdir('..')

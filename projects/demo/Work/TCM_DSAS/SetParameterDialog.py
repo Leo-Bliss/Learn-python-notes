@@ -23,7 +23,7 @@ class MySignal(QObject):
     def send(self,parameter_dict):
         self.sender.emit(parameter_dict)
 
-
+#FSFS
 class ParamerterDemo(QDialog):
     def __init__(self):
         super(ParamerterDemo,self).__init__()
@@ -122,7 +122,74 @@ class ParamerterDemo(QDialog):
         self.close()
 
 
+#Lasso
+class ParamerterDemo2(QDialog):
+    def __init__(self):
+        super(ParamerterDemo2,self).__init__()
+        self.initUI()
 
+    def initUI(self):
+        self.resize(400,200)
+        self.setMaximumSize(400,200)
+        self.setWindowTitle('设置参数')
+        self.signal = MySignal()
+        self.defuat_parameter_list = [50,20000]
+
+        self.form_layout = QFormLayout()
+
+        self.lable1 = QLabel()
+        self.lable1.setText('alpha:')
+        self.lable1.setToolTip('alpha')
+        self.line_edit1 = QLineEdit()
+        self.line_edit1.setValidator(QIntValidator())
+        self.line_edit1.setText('50')
+        self.form_layout.addRow(self.lable1, self.line_edit1)
+
+        self.lable2 = QLabel()
+        self.lable2.setText('max_iter:')
+        self.lable2.setToolTip('最大迭代次数')
+        self.line_edit2 = QLineEdit()
+        self.line_edit2.setValidator(QIntValidator())
+        self.line_edit2.setText('20000')
+        self.form_layout.addRow(self.lable2,self.line_edit2)
+
+        self.button1 = QPushButton('重置')
+        self.button1.setToolTip('重置为默认值')
+        self.button2 = QPushButton('取消')
+        self.button2.setToolTip('退出设置参数')
+        self.button3 = QPushButton('完成')
+        self.button3.setToolTip('确认设置参数')
+        hlayout = QHBoxLayout()
+        hlayout.addWidget(self.button1)
+        hlayout.addWidget(self.button2)
+        hlayout.addWidget(self.button3)
+        hlayout.setSpacing(20)
+        self.form_layout.addItem(hlayout)
+        self.setLayout(self.form_layout)
+
+        #关联信号
+        self.button1.clicked.connect(self.reSetParameter)
+        self.button2.clicked.connect(self.close)
+        self.button3.clicked.connect(self.sendSignal)
+
+    #重置参数
+    def reSetParameter(self):
+        for i in range(1,3):
+            try:
+                command = 'self.line_edit{}.setText(str(self.defuat_parameter_list[i-1]))'.format(i)
+                eval(command)
+            except Exception as e:
+                print(e)
+                pass
+
+    #参数设置完成，发送信号并关闭设置参数对话框
+    def sendSignal(self):
+        parameter_dict = {
+            'alpha': int(self.line_edit1.text()),
+            'max_iter': int(self.line_edit2.text()),
+        }
+        self.signal.send(parameter_dict)
+        self.close()
 
 
 if __name__=='__main__':

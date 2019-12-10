@@ -103,9 +103,8 @@ class MainWindowDemo(QWidget):
         print(index)
         if index == 2:
             data = self.input_widget.tab1.data
-            # print(data)
             try:
-                self.select_feature_widget.df = data
+                self.select_feature_widget.data = data
             except:
                 pass
 

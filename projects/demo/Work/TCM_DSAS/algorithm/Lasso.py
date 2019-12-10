@@ -20,14 +20,14 @@ import numpy as np
   其本质就是在常规的线性回归的基础上对参数加了一个L1正则化约束。
 '''
 
-def lasso(df):
+def lasso(df,parameter_dict):
     x_labels = df.columns.values
     # y_lables = df.index.values
 
     x_data = df[x_labels[0:-1]]
     y_data = df[x_labels[-1]]
 
-    lasso_model = linear_model.Lasso(alpha=50,max_iter=20000)
+    lasso_model = linear_model.Lasso(alpha=parameter_dict.get('alpha'),max_iter=parameter_dict.get('max_iter'))
     lasso_model.fit(x_data,y_data)
 
     #权重系数，为0则代表该特征剔除
@@ -55,7 +55,11 @@ if __name__=='__main__':
     # print(os.path.abspath('.'))
     path = r'./data/data1.xlsx'
     df2 = pd.read_excel(path,index_col=0)
-    lasso(df2)
+    parameter_dict = {
+        'alpha':50,
+        'max_iter':20000,
+    }
+    lasso(df2,parameter_dict)
 
 
 

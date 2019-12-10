@@ -107,7 +107,7 @@ class WidgetDemo(QWidget):
         self.status_bar.showMessage('打开文件',5000)
         self.dialog = QFileDialog()
         self.dialog.setFileMode(QFileDialog.AnyFile)
-        dir = r'./data/'
+        dir = r'D:/Learn-python-notes/projects/demo/Work/TCM_DSAS/data'
         self.dialog.setDirectory(dir)
         self.dialog.setFilter(QDir.Files)
         if self.dialog.exec_():
@@ -115,24 +115,13 @@ class WidgetDemo(QWidget):
                 timer = QElapsedTimer()
                 timer.start()
                 file_name = self.dialog.selectedFiles()[0]
-                df = pd.read_excel(file_name, sheet_name='Sheet1', index_col=0)
-                self.data = df
+                #这里读取数据返回列表便于表格中数据的更新
+                data_list = read_xlsx(file_name)
+                self.data = data_list
                 print('init data need %s seconds' % (timer.elapsed() / 1000))
-
                 self.mode = QStandardItemModel()
-                train_data = np.array(df)
-                data_list = train_data.tolist()
-
-                column_list = [''] + list(df.columns.values)
-                index_list = list(df.index.values)
-
-                #第一行
-                row = [QStandardItem(str(cell)) for cell in column_list]
-                self.mode.appendRow(row)
-                #其他行
-                for i,rows in enumerate(data_list):
+                for rows in data_list:
                     row = [QStandardItem(str(cell)) for cell in rows]
-                    row.insert(0,QStandardItem(str(index_list[i])))
                     self.mode.appendRow(row)
                 self.table_view.setModel(self.mode)
 
