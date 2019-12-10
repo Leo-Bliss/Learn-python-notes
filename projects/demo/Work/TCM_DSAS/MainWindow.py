@@ -35,14 +35,16 @@ class MainWindowDemo(QWidget):
         self.list_widget.addItem(item1)
         # quit = QLabel('退出')
         # quit.setPixmap(QPixmap('./image/退出.png'))
-        quit = QPushButton('退出')
-        quit.setMaximumSize(80, 50)
-        quit.setIcon(QIcon(QPixmap('./image/退出.png')))
-        quit.clicked.connect(self.close)
+
+        # quit = QPushButton('退出')
+        # quit.setMaximumSize(80, 50)
+        # quit.setIcon(QIcon(QPixmap('./image/退出.png')))
+        # quit.clicked.connect(self.close)
+
         # sizePolicy = QSizePolicy(QSizePolicy.Expanding,QSizePolicy.Fixed)
         # # print(quit.size())
         # quit.setSizePolicy(sizePolicy)
-        self.list_widget.setItemWidget(item1,quit)
+        # self.list_widget.setItemWidget(item1,quit)
 
         #设置item间隔
         self.list_widget.setSpacing(5)
@@ -94,10 +96,15 @@ class MainWindowDemo(QWidget):
 
         #关联单击信号
         self.list_widget.currentRowChanged.connect(self.onClickedListWidget)
+        #导入数据窗口与特征选择窗口信号与槽关联，用于传递导入的数据
+        self.input_widget.send.sendmsg2.connect(self.select_feature_widget.slot.get2)
 
     #根据index切换功能子窗口
     def onClickedListWidget(self,index):
         print(index)
+        if index == 2:
+            pass
+            # self.input_widget.send.run2()
         self.stack_widget.setCurrentIndex(index)
 
 
