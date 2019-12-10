@@ -19,8 +19,7 @@ from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem
 from PyQt5.QtCore import Qt,QDir,QElapsedTimer
-import pandas as pd
-import numpy as np
+from openpyxl import workbook
 import xlrd
 
 
@@ -32,7 +31,8 @@ class WidgetDemo(QWidget):
 
     def initUI(self,mode):
         self.resize(800,800)
-        self.data = None
+        #这里初始化，便于直接输入数据
+        self.data = [['']*100 for i in range(100)]
         #菜单栏
         self.menu = QMenuBar()
         self.file = self.menu.addMenu('文件')
@@ -97,6 +97,8 @@ class WidgetDemo(QWidget):
 
         #关联信号
         self.open.triggered.connect(self.clickOpen)
+        self.save.triggered.connect(self.clickSave)
+        self.mode.itemChanged.connect(self.dealItemChanged)
 
         #美化
         icon = QIcon()
@@ -123,6 +125,7 @@ class WidgetDemo(QWidget):
                 for rows in data_list:
                     row = [QStandardItem(str(cell)) for cell in rows]
                     self.mode.appendRow(row)
+                self.mode.itemChanged.connect(self.dealItemChanged)
                 self.table_view.setModel(self.mode)
 
                 print('input data need %s seconds' % (timer.elapsed() / 1000))
@@ -131,7 +134,30 @@ class WidgetDemo(QWidget):
                 print(e)
                 pass
 
+    def clickSave(self):
+        file_path, self.save = QFileDialog.getSaveFileName(self, '保存文件', './data',
+                                                           'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv);;txt(*.txt)')
+        # print(file_path)
+        wb = workbook.Workbook()
+        wb.encoding='utf-8'
+        wa = wb.active
+        # 文件中写入数据
+        try:
+            for item in self.data:
+                wa.append(item)
+            wb.save(file_path)
+        except Exception as e:
+            pass
 
+    #数据变化信号处理
+    def dealItemChanged(self,item):
+        print(u'位置(row:{},col:{})'.format(item.row(),item.column()) ,end='')
+        print(u' 改变了值!')
+        row,column = item.row(),item.column()
+        self.data[row][column] = item.text()
+        # print(self.data)
+        print(u'新值为:', item.text())
+        print('-'*100)
 
 
 def read_xlsx(path):
