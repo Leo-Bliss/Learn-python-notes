@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem
 from PyQt5.QtCore import Qt,QDir,QElapsedTimer,QAbstractTableModel
 import xlrd
+from projects.demo.SignalSlot.CustomSignal1 import MyTypeSignal
 
 
 global_data = None
@@ -51,6 +52,7 @@ class WidgetDemo(QWidget):
 
     def initUI(self,mode):
         self.resize(800,800)
+        self.data = None
         #菜单栏
         self.menu = QMenuBar()
         self.file = self.menu.addMenu('文件')
@@ -134,11 +136,14 @@ class WidgetDemo(QWidget):
                 timer.start()
                 file_name = self.dialog.selectedFiles()[0]
                 data = read_xlsx(file_name)
+                self.data = data
                 print('init data need %s seconds' % (timer.elapsed() / 1000))
                 # self.table_view.setModel(TableModel(data))
-                for i,rows in enumerate(data):
-                    for j,cell in enumerate(rows):
-                        self.mode.setItem(i,j,QStandardItem(str(cell)))
+                self.mode = QStandardItemModel()
+                for rows in data:
+                    row = [QStandardItem(str(cell)) for cell in rows]
+                    self.mode.appendRow(row)
+                self.table_view.setModel(self.mode)
                 print('input data need %s seconds' % (timer.elapsed() / 1000))
                 self.status_bar.showMessage('数据加载完毕！！！')
             except Exception as e:
@@ -173,12 +178,13 @@ class InputWindowDemo(QTabWidget):
 
     def initUI(self):
         self.setGeometry(500,100,1000,900)
+        self.send = MyTypeSignal()
 
         #创建两个窗口
         #tab1：显示全部，tab2：只显示变量
-        self.mode1 = QStandardItemModel(100, 15000)
+        self.mode1 = QStandardItemModel(100,100)
         self.tab1 = WidgetDemo(self.mode1)
-        self.mode2 = QStandardItemModel(15000, 1000)
+        self.mode2 = QStandardItemModel(100,100)
         self.tab2 = WidgetDemo(self.mode2)
 
 
