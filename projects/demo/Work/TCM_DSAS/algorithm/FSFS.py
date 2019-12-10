@@ -24,10 +24,10 @@ from minepy import MINE
 import os
 
 class FSFSDemo():
-    def __init__(self,path,parameter_dict):
+    def __init__(self,df,parameter_dict):
         self.n_components = parameter_dict.get('n_components')
         self.pls = PLSRegression(n_components=self.n_components,scale=True)
-        self.path = path
+        self.df = df
         self.topK = parameter_dict.get('topK')
         self.K = parameter_dict.get('K')
         self.step = parameter_dict.get('step')
@@ -36,21 +36,19 @@ class FSFSDemo():
         # self.y_now_predict = []
 
     def run(self):
-        df = pd.read_excel(self.path,sheet_name='Sheet1',index_col=0)
-
-        #print(df.columns.values)
+        #print(self.df.columns.values)
         #第一行，第一列
-        header_list = list(df.columns.values)
-        index_list = list(df.index.values)
+        header_list = list(self.df.columns.values)
+        index_list = list(self.df.index.values)
 
         self.y_old_predict = [0] * len(index_list)
         self.y_now_predict = [0] * len(index_list)
         # print(header_list)
         # print(index_list)
         #自变量X，因变量y
-        X = df[header_list[:-1]]
+        X = self.df[header_list[:-1]]
         # print(X.shape)
-        y = df[header_list[-1]]
+        y = self.df[header_list[-1]]
         # print(y.shape)
 
         #将数据分为k份，k折交叉验证
@@ -244,6 +242,7 @@ if __name__ == '__main__':
    os.chdir('..')
    file_name = 'data1.xlsx'
    path = '{0}\data\{1}'.format(os.path.abspath('.'),file_name)
+   df = pd.read_excel(path, sheet_name='Sheet1', index_col=0)
    parameter_dict = {
        'topK': 100,
        'n_components': 3,
@@ -251,6 +250,6 @@ if __name__ == '__main__':
        'step': 10,
        'alp': 5,
    }
-   f = FSFSDemo(path,parameter_dict)
+   f = FSFSDemo(df,parameter_dict)
    f.run()
 
