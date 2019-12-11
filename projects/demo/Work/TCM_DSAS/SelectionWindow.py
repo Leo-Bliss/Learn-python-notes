@@ -11,7 +11,7 @@
 有设置参数功能
 '''
 import sys
-from PyQt5.QtWidgets import QApplication,QWidget,QMessageBox
+from PyQt5.QtWidgets import QApplication,QWidget,QMessageBox,QStatusBar
 from PyQt5.QtWidgets import QLabel,QComboBox,QTextEdit,QLineEdit
 from PyQt5.QtWidgets import QPushButton,QToolBar,QAction
 from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout
@@ -19,6 +19,7 @@ from PyQt5.QtGui import QIcon
 from projects.demo.Work.TCM_DSAS import SetParameterDialog
 from projects.demo.Work.TCM_DSAS.algorithm import FSFS
 from projects.demo.Work.TCM_DSAS.algorithm import Lasso
+import time
 
 import pandas as pd
 
@@ -39,6 +40,8 @@ class SelectionWindowdemo(QWidget):
         self.run = QAction(QIcon('./image/运行程序.png'),'运行程序',self)
         self.tool_bar.addAction(self.set_parameter)
         self.tool_bar.addAction(self.run)
+
+        self.status_bar = QStatusBar()
 
         self.lable = QLabel('选择算法:')
         self.comb1 = QComboBox()
@@ -67,6 +70,7 @@ class SelectionWindowdemo(QWidget):
         vlayout = QVBoxLayout()
         vlayout.addItem(hlayout)
         vlayout.addWidget(self.text_edit)
+        vlayout.addWidget(self.status_bar)
         self.setLayout(vlayout)
 
         self.comb1.currentIndexChanged.connect(self.selectionChange1)
@@ -77,6 +81,7 @@ class SelectionWindowdemo(QWidget):
 
     #选择特征选择的算法
     def selectionChange1(self):
+        self.status_bar.showMessage(self.comb1.currentText(),5000)
         text = 'Features selection information'
         if self.comb1.currentText() == 'FSFS':
             text = 'four steps for features selection:\nFliter,Semi_weapper,Union,Voting.'
@@ -121,17 +126,18 @@ class SelectionWindowdemo(QWidget):
             return
         try:
             self.df = list_to_DataFrame(self.data)
-            print('特征选择中...')
             res_list = []
+            start = time.time()
             if self.comb1.currentText() == 'FSFS':
                 f = FSFS.FSFSDemo(self.df,self.parameter_dict)
                 res_list = f.run()
             elif self.comb1.currentText() == 'Lasso':
                 res_list = Lasso.lasso(self.df,self.parameter_dict)
+            end = time.time()
             str_res = ',\n'.join(res_list)
             res = '最终选择出的特征共{0}个:\n{1}'.format(len(res_list),str_res)
             self.text_edit.setText(res)
-            print('特征选择完成！！！')
+            self.status_bar.showMessage('特征选择完成,耗时{}秒'.format(end-start))
         except Exception as e:
             print(e)
 

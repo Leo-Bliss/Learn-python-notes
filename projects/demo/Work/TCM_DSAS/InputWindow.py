@@ -15,12 +15,13 @@
 import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget
 from PyQt5.QtWidgets import QTableView,QFileDialog
-from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar
+from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar,QAction
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem
-from PyQt5.QtCore import Qt,QDir,QElapsedTimer
+from PyQt5.QtCore import Qt,QDir
 from openpyxl import workbook
 import xlrd
+import time
 
 
 class WidgetDemo(QWidget):
@@ -45,7 +46,11 @@ class WidgetDemo(QWidget):
         self.new = self.file.addAction('新建')
         self.open = self.file.addAction('打开')
         self.save = self.file.addAction('保存')
-        self.save_as = self.file.addAction('另存为')
+        # self.save_as = self.file.addAction('另存为')
+        #快捷键
+        self.open.setShortcut('Ctrl+O')
+        self.save.setShortcut('Ctrl+S')
+        self.new.setShortcut('Ctrl+N')
 
         #编辑菜单下的子菜单
         self.cut = self.edit.addAction('剪切')
@@ -57,8 +62,14 @@ class WidgetDemo(QWidget):
         self.replace = self.edit.addAction('替换')
 
         #视图菜单下的子菜单
-        self.view_tool_bar = self.view.addAction('工具栏')
-        self.view_status_bar = self.view.addAction('状态栏')
+        self.tool_view = QAction('工具栏',checkable=True)
+        self.tool_view.setChecked(True)
+        self.view.addAction(self.tool_view)
+
+        self.statu_view = QAction('状态栏',checkable=True)
+        self.statu_view.setChecked(True)
+        self.view.addAction(self.statu_view)
+
 
         #帮助菜单下的子菜单
         self.about = self.help.addAction('关于')
@@ -96,16 +107,24 @@ class WidgetDemo(QWidget):
         self.setLayout(layout)
 
         #关联信号
-        self.open.triggered.connect(self.clickOpen)
-        self.save.triggered.connect(self.clickSave)
+        self.open.triggered.connect(self.triggeredOpen)
+        self.save.triggered.connect(self.triggeredSave)
         self.mode.itemChanged.connect(self.dealItemChanged)
+        self.tool_view.triggered.connect(self.triggeredView)
+        self.statu_view.triggered.connect(self.triggeredView)
+        self.new.triggered.connect(self.triggeredNew)
 
         #美化
         icon = QIcon()
         icon.addPixmap(QPixmap('./image/打开.png'), QIcon.Normal, QIcon.Off)
         self.open.setIcon(icon)
+        # icon = QIcon()
+        icon.addPixmap(QPixmap('./image/保存.png'), QIcon.Normal, QIcon.Off)
+        self.save.setIcon(icon)
+        icon.addPixmap(QPixmap('./image/新建.png'), QIcon.Normal, QIcon.Off)
+        self.new.setIcon(icon)
 
-    def clickOpen(self):
+    def triggeredOpen(self):
         self.status_bar.showMessage('打开文件',5000)
         self.dialog = QFileDialog()
         self.dialog.setFileMode(QFileDialog.AnyFile)
@@ -114,29 +133,26 @@ class WidgetDemo(QWidget):
         self.dialog.setFilter(QDir.Files)
         if self.dialog.exec_():
             try:
-                timer = QElapsedTimer()
-                timer.start()
+                start = time.time()
                 file_name = self.dialog.selectedFiles()[0]
                 #这里读取数据返回列表便于表格中数据的更新
                 data_list = read_xlsx(file_name)
                 self.data = data_list
-                print('init data need %s seconds' % (timer.elapsed() / 1000))
                 self.mode = QStandardItemModel()
                 for rows in data_list:
                     row = [QStandardItem(str(cell)) for cell in rows]
                     self.mode.appendRow(row)
                 self.mode.itemChanged.connect(self.dealItemChanged)
                 self.table_view.setModel(self.mode)
-
-                print('input data need %s seconds' % (timer.elapsed() / 1000))
-                self.status_bar.showMessage('数据加载完毕！！！')
+                end = time.time()
+                self.status_bar.showMessage('数据加载完毕,耗时{}秒'.format(end-start))
             except Exception as e:
                 print(e)
                 pass
 
-    def clickSave(self):
+    def triggeredSave(self):
         file_path, self.save = QFileDialog.getSaveFileName(self, '保存文件', './data',
-                                                           'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv);;txt(*.txt)')
+                                                           'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv)')
         # print(file_path)
         wb = workbook.Workbook()
         wb.encoding='utf-8'
@@ -159,7 +175,29 @@ class WidgetDemo(QWidget):
         print(u'新值为:', item.text())
         print('-'*100)
 
+    #状态栏与工具栏的显示和隐藏
+    def triggeredView(self,state):
+        sender = self.sender().text()
+        if sender == '工具栏':
+            if state:
+                self.tool_bar.show()
+            else:
+                self.tool_bar.hide()
+        else:
+            if state:
+                self.status_bar.show()
+            else:
+                self.status_bar.hide()
 
+    def triggeredNew(self):
+        print('New')
+        pass
+
+
+
+
+
+#xls,xlxs,csv
 def read_xlsx(path):
     workbook = xlrd.open_workbook(path)
     sheet1 = workbook.sheet_by_index(0)

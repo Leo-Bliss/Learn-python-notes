@@ -13,7 +13,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QLabel,QPushButton
 from PyQt5.QtWidgets import QListWidget,QListWidgetItem,QStackedWidget
-from PyQt5.QtWidgets import QHBoxLayout,QSizePolicy
+from PyQt5.QtWidgets import QHBoxLayout,QSizePolicy,QStyleFactory
 from PyQt5.QtGui import QIcon,QPixmap,QPalette,QBrush
 
 from projects.demo.Work.TCM_DSAS import InputWindow as IW
@@ -23,6 +23,7 @@ class MainWindowDemo(QWidget):
     def __init__(self):
         super(MainWindowDemo,self).__init__()
         self.initUI()
+        QApplication.setStyle(QStyleFactory.keys()[2])
 
     def initUI(self):
         self.setGeometry(450,100,1000,800)
