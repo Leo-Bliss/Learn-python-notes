@@ -244,7 +244,7 @@ if __name__ == '__main__':
    path = '{0}\data\{1}'.format(os.path.abspath('.'),file_name)
    df = pd.read_excel(path, sheet_name='Sheet1', index_col=0)
    parameter_dict = {
-       'topK': 1000,
+       'topK': 100,
        'n_components': 3,
        'K': 10,
        'step': 10,
