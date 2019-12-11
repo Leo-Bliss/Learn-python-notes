@@ -32,13 +32,14 @@ class FSFSDemo():
         self.K = parameter_dict.get('K')
         self.step = parameter_dict.get('step')
         self.alp = parameter_dict.get('alp')
-        # self.y_old_predict = []
-        # self.y_now_predict = []
+        self.kf =  kf = KFold(n_splits=self.K,shuffle=True,random_state=0)
+        self. best_features = []
 
     def run(self):
+        print('-'*50)
         #print(self.df.columns.values)
         #第一行，第一列
-        header_list = list(self.df.columns.values)
+        self.header_list = list(self.df.columns.values)
         index_list = list(self.df.index.values)
 
         self.y_old_predict = [0] * len(index_list)
@@ -46,30 +47,29 @@ class FSFSDemo():
         # print(header_list)
         # print(index_list)
         #自变量X，因变量y
-        X = self.df[header_list[:-1]]
+        self.X = self.df[self.header_list[:-1]]
         # print(X.shape)
-        y = self.df[header_list[-1]]
+        self.y = self.df[self.header_list[-1]]
         # print(y.shape)
 
         #将数据分为k份，k折交叉验证
-        kf = KFold(n_splits=self.K,shuffle=True,random_state=0)
         final_set_list = [] #经过k次折叠后得的特征集 列表
-        for train_index,test_index in kf.split(X):
+        for train_index,test_index in self.kf.split(self.X):
             # print(train_index)
             # print('-'*100)
             # print(test_index)
-            X_train,y_train = X.values[train_index],y[train_index]
+            X_train,y_train = self.X.values[train_index],self.y[train_index]
             y_train_tmp = np.array(y_train)
 
             #转换为DataFrame格式便于计算
-            X_train = pd.DataFrame(X_train,index=train_index,columns=header_list[:-1])
-            y_train = pd.DataFrame(y_train.values,index=train_index,columns=[header_list[-1]])
+            X_train = pd.DataFrame(X_train,index=train_index,columns=self.header_list[:-1])
+            y_train = pd.DataFrame(y_train.values,index=train_index,columns=[self.header_list[-1]])
 
-            X_test,y_test = X.values[test_index],y[test_index]
+            X_test,y_test = self.X.values[test_index],self.y[test_index]
             # y_test_tmp = np.array(y_test)
 
-            X_test = pd.DataFrame(X_test,index=test_index,columns=header_list[:-1])
-            y_test = pd.DataFrame(y_test.values,index=test_index,columns=[header_list[-1]])
+            X_test = pd.DataFrame(X_test,index=test_index,columns=self.header_list[:-1])
+            y_test = pd.DataFrame(y_test.values,index=test_index,columns=[self.header_list[-1]])
 
             #训练得到相关参数，即得到拟合方程
             self.pls.fit(X_train, y_train)
@@ -152,36 +152,34 @@ class FSFSDemo():
        #Voting
         condidate_features = set(final_set_list)
         condidate_feature_dict = {feature:final_set_list.count(feature) for feature in condidate_features}
-        best_features = []
         for key,value in condidate_feature_dict.items():
             if(value >= self.alp):
-                best_features.append(key)
+                self.best_features.append(key)
             print(key+':'+str(value))
-        print('最终投票出%d个特征'%len(best_features))
-        print(best_features)
-        return best_features
+        print('最终投票出%d个特征'%len(self.best_features))
+        print(self.best_features)
+        return self.best_features
 
-'''
-        #检验选出的特征
-        now_X = X[best_features]
+    def anlysis(self):
+        # 检验选出的特征
+        now_X = self.X[self.best_features]
         print('+++++++++++++++++++++++++++++++++++++++++++++++++')
-
-        for train_index,test_index in kf.split(now_X):
+        for train_index, test_index in self.kf.split(now_X):
             # print(train_index)
             # print('+-------------------+')
             # print(test_index)
-            X_train,y_train = now_X.values[train_index],y[train_index]
+            X_train, y_train = now_X.values[train_index], self.y[train_index]
 
-            #转换为DataFrame格式便于计算
-            X_train = pd.DataFrame(X_train,index=train_index,columns=best_features)
-            y_train = pd.DataFrame(y_train.values,index=train_index,columns=[header_list[-1]])
+            # 转换为DataFrame格式便于计算
+            X_train = pd.DataFrame(X_train, index=train_index, columns=self.best_features)
+            y_train = pd.DataFrame(y_train.values, index=train_index, columns=[self.header_list[-1]])
 
-            X_test,y_test = now_X.values[test_index],y[test_index]
-            X_test = pd.DataFrame(X_test,index=test_index,columns=best_features)
+            X_test, y_test = now_X.values[test_index], self.y[test_index]
+            X_test = pd.DataFrame(X_test, index=test_index, columns=self.best_features)
 
-            #训练得到相关参数，即得到拟合方程
+            # 训练得到相关参数，即得到拟合方程
             self.pls.fit(X_train, y_train)
-            #代入测试集中的自变量得到预测的因变量
+            # 代入测试集中的自变量得到预测的因变量
             y_test_predict = self.pls.predict(X_test)
             # 记录每一个预测的y
             zipped = zip(test_index, y_test_predict)
@@ -189,19 +187,19 @@ class FSFSDemo():
                 value = arr[0]
                 self.y_now_predict[key] = value
 
-        # print(self.y_now_predict)
-        # print('****************************')
-        # print(self.y_old_predict)
-        now_RMSE = get_RMSE(self.y_now_predict,y.values)
-        old_RMSE = get_RMSE(self.y_old_predict,y.values)
-        print(now_RMSE,old_RMSE)
+        now_RMSE = get_RMSE(self.y_now_predict, self.y.values)
+        old_RMSE = get_RMSE(self.y_old_predict, self.y.values)
+        print(now_RMSE, old_RMSE)
 
-        # compare = pd.DataFrame()
-        # compare['y'] = y.values
-        # compare['y_old'] = self.y_old_predict
-        # compare['y_new'] = self.y_now_predict
-        # print(compare)
-'''
+        compare = pd.DataFrame()
+        compare['y'] = self.y.values
+        compare['y_old'] = self.y_old_predict
+        compare['y_new'] = self.y_now_predict
+        print(compare)
+
+
+
+
 # RMSE：均方根误差，越小越好
 def get_RMSE(y_predict, y_test):
     MSE = np.mean((y_test - y_predict) ** 2)
@@ -237,13 +235,6 @@ def pearson(vector1, vector2):
     r = cov / s
     return r
 
-def read_xlsx(path):
-    import xlrd
-    workbook = xlrd.open_workbook(path)
-    sheet1 = workbook.sheet_by_index(0)
-    rows = len(sheet1.col_values(0))
-    data = [sheet1.row_values(i) for i in range(rows)]
-    return data
 
 
 
@@ -253,7 +244,7 @@ if __name__ == '__main__':
    path = '{0}\data\{1}'.format(os.path.abspath('.'),file_name)
    df = pd.read_excel(path, sheet_name='Sheet1', index_col=0)
    parameter_dict = {
-       'topK': 100,
+       'topK': 1000,
        'n_components': 3,
        'K': 10,
        'step': 10,
@@ -261,4 +252,5 @@ if __name__ == '__main__':
    }
    f = FSFSDemo(df,parameter_dict)
    f.run()
+   f.anlysis()
 
