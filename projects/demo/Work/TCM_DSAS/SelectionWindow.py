@@ -91,7 +91,7 @@ class SelectionWindowdemo(QWidget):
     #搜索算法
     def clickSearch(self):
         text = self.line_edit.text()
-        index = self.comb1.findText(text)
+        index = self.comb1.findText(text,)
         if index != -1:
             self.comb1.setCurrentIndex(index)
         else:
@@ -116,7 +116,7 @@ class SelectionWindowdemo(QWidget):
          self.run.setEnabled(True)
 
     def runProcess(self):
-        if self.data is None:
+        if self.data is None or self.data[0][1] == '':
             QMessageBox.critical(self,'错误','请先导入数据',QMessageBox.Yes,QMessageBox.No)
             return
         try:
