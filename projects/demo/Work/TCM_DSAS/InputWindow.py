@@ -33,7 +33,7 @@ class WidgetDemo(QWidget):
     def initUI(self,mode):
         self.resize(800,800)
         #这里初始化，便于直接输入数据
-        self.data = [['']*100 for i in range(100)]
+        self.data = [['']*100 for i in range(15000)]
         #菜单栏
         self.menu = QMenuBar()
         self.file = self.menu.addMenu('文件')
