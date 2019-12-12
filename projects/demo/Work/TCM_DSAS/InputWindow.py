@@ -167,13 +167,12 @@ class WidgetDemo(QWidget):
 
     #数据变化信号处理
     def dealItemChanged(self,item):
-        print(u'位置(row:{},col:{})'.format(item.row(),item.column()) ,end='')
-        print(u' 改变了值!')
-        row,column = item.row(),item.column()
-        self.data[row][column] = item.text()
-        # print(self.data)
-        print(u'新值为:', item.text())
-        print('-'*100)
+        try:
+            row,column = item.row(),item.column()
+            self.data[row][column] = item.text()
+        except Exception as e:
+            print(e)
+            pass
 
     #状态栏与工具栏的显示和隐藏
     def triggeredView(self,state):
