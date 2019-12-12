@@ -5,7 +5,7 @@
 '''
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import  QtWidgets
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget,QTextEdit
 import matplotlib.pyplot as plt
 import sys
 
@@ -17,15 +17,18 @@ class PlotWindowDemo(QWidget):
         self.figure = plt.figure(facecolor='#66CCFF')
         self.canvas = FigureCanvas(self.figure)
         self.draw_button = QPushButton("绘图")
+        #显示用于分析的数据
+        self.text_edit = QTextEdit()
 
         #绑定信号
         self.draw_button.clicked.connect(self.onClickDraw)
 
         #设置布局
         layout = QVBoxLayout()
-        layout.addWidget(self.canvas)
         layout.addWidget(self.draw_button)
+        layout.addWidget(self.canvas)
         self.setLayout(layout)
+        layout.addWidget(self.text_edit)
 
     def onClickDraw(self):
         #这里开始就按照matlibplot的方式绘图

@@ -30,7 +30,7 @@ class MainWindowDemo(QWidget):
         self.setWindowTitle('中医药数据特征选择分析平台')
 
         self.list_widget = QListWidget()
-        self.item_list = ['平台首页','数据导入','特征选择','数据分析','数据中心','算法中心','知识中心','联系作者']
+        self.item_list = ['平台首页','数据导入','特征选择','数据中心','算法中心','知识中心','联系作者']
         self.list_widget.addItems(self.item_list)
         item1 = QListWidgetItem()
         self.list_widget.addItem(item1)
@@ -54,7 +54,7 @@ class MainWindowDemo(QWidget):
         self.interface_widget = QWidget()
         self.input_widget = IW.InputWindowDemo()
         self.select_feature_widget = SW.SelectionWindowdemo()
-        self.analyze_data_widget = QWidget()
+        # self.analyze_data_widget = QWidget()
         self.database_widget = QWidget()
         self.algorithm_widget = QWidget()
         self.konwledge_widget = QWidget()
@@ -65,7 +65,7 @@ class MainWindowDemo(QWidget):
         self.stack_widget.addWidget(self.interface_widget)
         self.stack_widget.addWidget(self.input_widget)
         self.stack_widget.addWidget(self.select_feature_widget)
-        self.stack_widget.addWidget(self.analyze_data_widget)
+        # self.stack_widget.addWidget(self.analyze_data_widget)
         self.stack_widget.addWidget(self.database_widget)
         self.stack_widget.addWidget(self.algorithm_widget)
         self.stack_widget.addWidget(self.konwledge_widget)

@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QPushButton,QToolBar,QAction
 from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout
 from PyQt5.QtGui import QIcon
 from projects.demo.Work.TCM_DSAS import SetParameterDialog
+from projects.demo.Work.TCM_DSAS import AnalysisWindow
 from projects.demo.Work.TCM_DSAS.algorithm import FSFS
 from projects.demo.Work.TCM_DSAS.algorithm import Lasso
 import time
@@ -33,13 +34,16 @@ class SelectionWindowdemo(QWidget):
         self.setWindowTitle('特征选择窗口')
         self.parameter_dict = None
         self.data = None
+        self.handle_analysis = None
 
 
         self.tool_bar = QToolBar()
-        self.set_parameter = QAction(QIcon('./image/参数设置.png'),'设置参数',self)
+        self.set_parameter = QAction(QIcon('./image/参数.png'),'设置参数',self)
         self.run = QAction(QIcon('./image/运行程序.png'),'运行程序',self)
+        self.analysis = QAction(QIcon('./image/对比分析.png'),'预测分析',self)
         self.tool_bar.addAction(self.set_parameter)
         self.tool_bar.addAction(self.run)
+        self.tool_bar.addAction(self.analysis)
 
         self.status_bar = QStatusBar()
 
@@ -78,6 +82,7 @@ class SelectionWindowdemo(QWidget):
         self.button.clicked.connect(self.clickSearch)
         self.set_parameter.triggered.connect(self.getParameter)
         self.run.triggered.connect(self.runProcess)
+        self.analysis.triggered.connect(self.runAnalysis)
 
     #选择特征选择的算法
     def selectionChange1(self):
@@ -125,14 +130,20 @@ class SelectionWindowdemo(QWidget):
             QMessageBox.critical(self,'错误','请先导入数据',QMessageBox.Yes,QMessageBox.No)
             return
         try:
+            self.run.setEnabled(False)
             self.df = list_to_DataFrame(self.data)
             res_list = []
             start = time.time()
+            print('特征选择中...')
+            f = None
             if self.comb1.currentText() == 'FSFS':
                 f = FSFS.FSFSDemo(self.df,self.parameter_dict)
-                res_list = f.run()
             elif self.comb1.currentText() == 'Lasso':
-                res_list = Lasso.lasso(self.df,self.parameter_dict)
+                f = Lasso.LassoDemo(self.df,self.parameter_dict)
+            if f is None:
+                return
+            res_list = f.run()
+            self.handle_analysis = f
             end = time.time()
             str_res = ',\n'.join(res_list)
             res = '最终选择出的特征共{0}个:\n{1}'.format(len(res_list),str_res)
@@ -140,6 +151,16 @@ class SelectionWindowdemo(QWidget):
             self.status_bar.showMessage('特征选择完成,耗时{}秒'.format(end-start))
         except Exception as e:
             print(e)
+
+    def runAnalysis(self):
+        print('-'*100)
+        if self.handle_analysis is not None:
+            RMSE,y_predict = self.handle_analysis.analysis()
+        self.plot_widget = AnalysisWindow.PlotWindowDemo()
+        self.plot_widget.show()
+
+
+
 
 
 
