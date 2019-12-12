@@ -12,6 +12,8 @@ from sklearn import linear_model
 import pandas as pd
 import os
 import numpy as np
+from minepy import MINE
+import math
 
 
 '''
@@ -19,34 +21,63 @@ import numpy as np
   直译过来为最小收缩与选择算子。
   其本质就是在常规的线性回归的基础上对参数加了一个L1正则化约束。
 '''
+class LassoDemo():
+    def __init__(self,df,parameter_dict):
+        self.df = df
+        self.x_labels = self.df.columns.values
+        self.x_data = self.df[self.x_labels[0:-1]]
+        self.y_data = self.df[self.x_labels[-1]]
+        self.lasso_model = linear_model.Lasso(alpha=parameter_dict.get('alpha'), max_iter=parameter_dict.get('max_iter'))
+        self.best_features = []
+    
+    def run(self):
+        
+        self.lasso_model.fit(self.x_data, self.y_data)
 
-def lasso(df,parameter_dict):
-    x_labels = df.columns.values
-    # y_lables = df.index.values
+        # 权重系数，为0则代表该特征剔除
+        # print(self.lasso_model.coef_)
+        coef = pd.Series(self.lasso_model.coef_)
 
-    x_data = df[x_labels[0:-1]]
-    y_data = df[x_labels[-1]]
+        # 留下的特征数目
+        print('选出的特征共{}个:'.format(sum(coef != 0)))
 
-    lasso_model = linear_model.Lasso(alpha=parameter_dict.get('alpha'),max_iter=parameter_dict.get('max_iter'))
-    lasso_model.fit(x_data,y_data)
+        # 保存留下的特征
+        for i, item in enumerate(coef):
+            if item != 0:
+                feature = self.x_labels[i]
+                self.best_features.append(feature)
+                print(feature)
+        return self.best_features
+    
+    def analysis(self):
+        # 预测
+        self.y_old_predict = [self.lasso_model.predict(self.x_data.values[i, np.newaxis])[0] for i in
+                              range(len(self.x_data.values))]
+        # print(self.old_predcit)
+        self.now_x_data = self.df[self.best_features]
+        # print(self.now_x_data)
+        self.lasso_model.fit(self.now_x_data, self.y_data)
+        self.y_now_predict = [self.lasso_model.predict(self.now_x_data.values[i, np.newaxis])[0] for i in
+                            range(len(self.now_x_data.values))]
+        now_RMSE = get_RMSE(self.y_now_predict, self.y_data.values)
+        old_RMSE = get_RMSE(self.y_old_predict, self.y_data.values)
+        print('now_RMSE:{},old_RMSE:{}'.format(now_RMSE, old_RMSE))
+        RMSE = now_RMSE, old_RMSE
 
-    #权重系数，为0则代表该特征剔除
-    # print(lasso_model.coef_)
-    coef = pd.Series(lasso_model.coef_)
+        compare = pd.DataFrame()
+        compare['y'] = self.y_data.values
+        compare['y_old'] =  self.y_old_predict
+        compare['y_now'] = self.y_now_predict
+        print(compare)
+        return RMSE,compare
 
-    #留下的特征数目
-    print('选出的特征共{}个:'.format(sum(coef!=0)))
 
-    #保存留下的特征
-    best_features = []
-    for i,item in enumerate(coef):
-        if item != 0:
-            feature = x_labels[i]
-            best_features.append(feature)
-            print(feature)
-    #预测
-    # print(lasso_model.predict(x_data.values[-1,np.newaxis]))
-    return best_features
+# RMSE：均方根误差，越小越好
+def get_RMSE(y_predict, y_test):
+    MSE = np.mean((y_test - y_predict) ** 2)
+    RMSE = math.sqrt(MSE)
+    return RMSE
+
     
 if __name__=='__main__':
     # print(os.getcwd())
@@ -59,7 +90,9 @@ if __name__=='__main__':
         'alpha':50,
         'max_iter':20000,
     }
-    lasso(df2,parameter_dict)
+    lasso = LassoDemo(df2,parameter_dict)
+    lasso.run()
+    lasso.analysis()
 
 
 

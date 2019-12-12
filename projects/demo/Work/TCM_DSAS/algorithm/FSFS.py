@@ -32,26 +32,22 @@ class FSFSDemo():
         self.K = parameter_dict.get('K')
         self.step = parameter_dict.get('step')
         self.alp = parameter_dict.get('alp')
-        self.kf =  kf = KFold(n_splits=self.K,shuffle=True,random_state=0)
+        self.kf = KFold(n_splits=self.K,shuffle=True,random_state=0)
         self. best_features = []
-
-    def run(self):
-        print('-'*50)
-        #print(self.df.columns.values)
-        #第一行，第一列
+        print('-' * 50)
+        # print(self.df.columns.values)
+        # 第一行，第一列
         self.header_list = list(self.df.columns.values)
         index_list = list(self.df.index.values)
 
         self.y_old_predict = [0] * len(index_list)
         self.y_now_predict = [0] * len(index_list)
-        # print(header_list)
-        # print(index_list)
-        #自变量X，因变量y
-        self.X = self.df[self.header_list[:-1]]
-        # print(X.shape)
-        self.y = self.df[self.header_list[-1]]
-        # print(y.shape)
 
+        # 自变量X，因变量y
+        self.X = self.df[self.header_list[:-1]]
+        self.y = self.df[self.header_list[-1]]
+
+    def run(self):
         #将数据分为k份，k折交叉验证
         final_set_list = [] #经过k次折叠后得的特征集 列表
         for train_index,test_index in self.kf.split(self.X):
@@ -160,7 +156,7 @@ class FSFSDemo():
         print(self.best_features)
         return self.best_features
 
-    def anlysis(self):
+    def analysis(self):
         # 检验选出的特征
         now_X = self.X[self.best_features]
         print('+++++++++++++++++++++++++++++++++++++++++++++++++')
@@ -189,13 +185,15 @@ class FSFSDemo():
 
         now_RMSE = get_RMSE(self.y_now_predict, self.y.values)
         old_RMSE = get_RMSE(self.y_old_predict, self.y.values)
-        print(now_RMSE, old_RMSE)
+        print('now_RMSE:{},old_RMSE:{}'.format(now_RMSE, old_RMSE))
+        RMSE = now_RMSE, old_RMSE
 
         compare = pd.DataFrame()
         compare['y'] = self.y.values
         compare['y_old'] = self.y_old_predict
         compare['y_new'] = self.y_now_predict
         print(compare)
+        return RMSE,compare
 
 
 
@@ -239,6 +237,7 @@ def pearson(vector1, vector2):
 
 
 if __name__ == '__main__':
+
    os.chdir('..')
    file_name = 'data1.xlsx'
    path = '{0}\data\{1}'.format(os.path.abspath('.'),file_name)
