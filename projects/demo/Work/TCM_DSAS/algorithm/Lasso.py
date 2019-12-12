@@ -66,8 +66,8 @@ class LassoDemo():
 
         compare = pd.DataFrame()
         compare['y'] = self.y_data.values
-        compare['y_old'] =  self.y_old_predict
-        compare['y_now'] = self.y_now_predict
+        compare['y_old_predict'] =  self.y_old_predict
+        compare['y_now_predict'] = self.y_now_predict
         print(compare)
         return RMSE,compare
 

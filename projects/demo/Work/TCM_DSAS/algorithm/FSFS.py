@@ -190,8 +190,8 @@ class FSFSDemo():
 
         compare = pd.DataFrame()
         compare['y'] = self.y.values
-        compare['y_old'] = self.y_old_predict
-        compare['y_new'] = self.y_now_predict
+        compare['y_old_predict'] = self.y_old_predict
+        compare['y_new_predict'] = self.y_now_predict
         print(compare)
         return RMSE,compare
 
