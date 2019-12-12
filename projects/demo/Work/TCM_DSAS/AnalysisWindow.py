@@ -1,4 +1,10 @@
-# coding:utf-8
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+#@Time    :    21:18  2019/12/12
+#@Author  :    tb_youth
+#@FileName:    PlotOnWindow.py
+#@SoftWare:    PyCharm
+#@Blog    :    http://blog.csdn.net/tb_youth
 
 '''
 在窗口中使用matlibplot绘制图形
