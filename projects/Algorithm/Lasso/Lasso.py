@@ -33,9 +33,9 @@ def lasso(df,type=0):
 
     # #留下的特征数目
     print('count:',str(sum(coef!=0)))
-    # for item in coef:
-    #     if item != 0:
-    #         print(item)
+    for i,item in enumerate(coef):
+        if item != 0:
+            print('x{}'.format(i))
 
     # #预测
     # print(lasso_model.predict(x_data.values[-1,np.newaxis]))

@@ -126,18 +126,22 @@ class Demo(QWidget):
 
     def add(self):
         for i in range(self.list_widget1.count()):
+
             now_item = self.list_widget1.item(i).listWidget().item(i)
             now_check_box = self.list_widget1.item(i).listWidget().itemWidget(now_item)
             if(now_check_box.isChecked()):
-                item = QListWidgetItem()
-                check_box = QCheckBox(now_check_box.text())
-                check_box.setChecked(True)
-                self.list_widget2.addItem(item)
-                self.list_widget2.setItemWidget(item, check_box)
-                now_check_box.setChecked(False)
-                now_check_box.setEnabled(False)
-                # print(self.list_widget1.item(i))
-                # self.list_widget1.removeItemWidget(self.list_widget1.item(i))
+                    print(self.list_widget1.takeItem(i))
+
+            #     # item = QListWidgetItem()
+            #     # check_box = QCheckBox(now_check_box.text())
+            #     # check_box.setChecked(True)
+            #     # self.list_widget2.addItem(item)
+            #     # self.list_widget2.setItemWidget(item, check_box)
+            #     # now_check_box.setChecked(False)
+            #     # now_check_box.setEnabled(False)
+            #     self.list_widget1.takeItem(i)
+            #     # print(self.list_widget1.item(i))
+            #     # self.list_widget1.removeItemWidget(self.list_widget1.item(i))
 
 # def open_xlsx(file_name):
 #     import xlrd
