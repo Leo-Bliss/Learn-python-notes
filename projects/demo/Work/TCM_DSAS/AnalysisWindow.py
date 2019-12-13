@@ -48,18 +48,20 @@ class AnalysisWindowDemo(QWidget):
 
         # 设置布局
         hlayout = QHBoxLayout()
-        hlayout.addWidget(self.table_view)
-        vlayout = QHBoxLayout()
-        vlayout.addWidget(self.predict_button)
-        vlayout.addWidget(self.draw_button)
-        vlayout.addWidget(self.output_button)
-        # vlayout.addWidget(self.input_button)
-        vlayout.addStretch()
-        vlayout.setSpacing(10)
-        # hlayout.addItem(vlayout)
+        hlayout.addWidget(self.predict_button)
+        hlayout.addWidget(self.draw_button)
+        hlayout.addWidget(self.output_button)
+        # hlayout.addWidget(self.input_button)
+        hlayout.addStretch()
+        hlayout.setSpacing(15)
+        
+        hlayout1 = QHBoxLayout()
+        hlayout1.addWidget(self.table_view)
+       
+        # hlayout.addItem(hlayout)
         layout = QVBoxLayout()
-        layout.addItem(vlayout)
         layout.addItem(hlayout)
+        layout.addItem(hlayout1)
 
         layout.addWidget(self.canvas)
         layout.setStretch(0, 1)
