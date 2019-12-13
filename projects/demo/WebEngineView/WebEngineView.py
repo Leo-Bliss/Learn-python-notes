@@ -14,7 +14,7 @@ import os
 
 class WebEngnieViewDemo(QMainWindow):
     def __init__(self):
-        super().__init__()
+        super(WebEngnieViewDemo,self).__init__()
         self.setWindowTitle('打开外部网页')
         self.setGeometry(5,50,1335,730)
         self.browser = QWebEngineView()
