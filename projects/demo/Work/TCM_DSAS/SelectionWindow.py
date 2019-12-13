@@ -41,10 +41,12 @@ class SelectionWindowdemo(QWidget):
         self.tool_bar = QToolBar()
         self.set_parameter = QAction(QIcon('./image/参数.png'),'设置参数',self)
         self.run = QAction(QIcon('./image/运行程序.png'),'运行程序',self)
+        self.save = QAction(QIcon('./image/下载保存.png'),'保存结果',self)
         self.analysis = QAction(QIcon('./image/对比分析.png'),'分析预测',self)
         self.tool_bar.addAction(self.set_parameter)
         self.tool_bar.addAction(self.run)
         self.tool_bar.addAction(self.analysis)
+        self.tool_bar.addAction(self.save)
 
         self.status_bar = QStatusBar()
 
