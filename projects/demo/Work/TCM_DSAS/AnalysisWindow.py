@@ -12,8 +12,8 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import  QtWidgets
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget
-from PyQt5.QtWidgets import QTableView,QHBoxLayout,QFileDialog
-from PyQt5.QtGui import QStandardItem,QStandardItemModel,QColor
+from PyQt5.QtWidgets import QTableView,QHBoxLayout,QFileDialog,QHeaderView
+from PyQt5.QtGui import QStandardItem,QStandardItemModel,QColor,QIcon
 import matplotlib.pyplot as plt
 import sys
 import random
@@ -29,13 +29,14 @@ class AnalysisWindowDemo(QWidget):
         self.initUI()
     def initUI(self):
         self.setWindowTitle('分析预测')
+        self.setWindowIcon(QIcon('./image/对比分析.png'))
         #需要的数据
         self.RMSE = None
         self.y_predict = None
         self.plt = plt
 
         # 创建一个展示板
-        self.figure = self.plt.figure(facecolor='#66CCFF')
+        self.figure = self.plt.figure()
         self.canvas = FigureCanvas(self.figure)
         self.predict_button = QPushButton('预测')
         self.draw_button = QPushButton('绘图')
@@ -48,19 +49,22 @@ class AnalysisWindowDemo(QWidget):
         # 设置布局
         hlayout = QHBoxLayout()
         hlayout.addWidget(self.table_view)
-        vlayout = QVBoxLayout()
+        vlayout = QHBoxLayout()
         vlayout.addWidget(self.predict_button)
         vlayout.addWidget(self.draw_button)
         vlayout.addWidget(self.output_button)
         # vlayout.addWidget(self.input_button)
         vlayout.addStretch()
         vlayout.setSpacing(10)
-        hlayout.addItem(vlayout)
+        # hlayout.addItem(vlayout)
         layout = QVBoxLayout()
+        layout.addItem(vlayout)
         layout.addItem(hlayout)
+
         layout.addWidget(self.canvas)
         layout.setStretch(0, 1)
-        layout.setStretch(1, 1)
+        layout.setStretch(1, 5)
+        layout.setStretch(2,5)
         self.setLayout(layout)
 
         # 绑定信号
@@ -87,6 +91,7 @@ class AnalysisWindowDemo(QWidget):
         row[-1].setForeground(QColor(255, 0, 0))
         self.model.appendRow(row)
         self.table_view.setModel(self.model)
+        self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
 
     def onClickDraw(self):

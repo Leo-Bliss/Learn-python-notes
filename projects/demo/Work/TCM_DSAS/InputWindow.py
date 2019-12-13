@@ -16,7 +16,7 @@ import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget
 from PyQt5.QtWidgets import QTableView,QFileDialog
 from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar,QAction
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout,QHeaderView
 from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem
 from PyQt5.QtCore import Qt,QDir
 from openpyxl import workbook
@@ -144,6 +144,7 @@ class WidgetDemo(QWidget):
                     self.mode.appendRow(row)
                 self.mode.itemChanged.connect(self.dealItemChanged)
                 self.table_view.setModel(self.mode)
+                self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
                 end = time.time()
                 self.status_bar.showMessage('数据加载完毕,耗时{}秒'.format(end-start))
             except Exception as e:

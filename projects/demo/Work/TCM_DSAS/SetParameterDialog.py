@@ -13,7 +13,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication,QDialog,QLabel,QLineEdit
 from PyQt5.QtWidgets import QFormLayout,QHBoxLayout,QPushButton
-from PyQt5.QtGui import QIntValidator
+from PyQt5.QtGui import QIntValidator,QIcon
 from PyQt5.QtCore import pyqtSignal,pyqtSlot,QObject
 
 
@@ -33,6 +33,7 @@ class ParamerterDemo(QDialog):
         self.resize(400,200)
         self.setMaximumSize(400,200)
         self.setWindowTitle('设置参数')
+        self.setWindowIcon(QIcon('./image/参数.png'))
         self.signal = MySignal()
         self.defuat_parameter_list = [100, 3, 10, 10, 5]
 
@@ -132,6 +133,7 @@ class ParamerterDemo2(QDialog):
         self.resize(400,200)
         self.setMaximumSize(400,200)
         self.setWindowTitle('设置参数')
+        self.setWindowIcon(QIcon('./image/参数.png'))
         self.signal = MySignal()
         self.defuat_parameter_list = [50,20000]
 
