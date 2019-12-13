@@ -144,7 +144,9 @@ class WidgetDemo(QWidget):
                     self.mode.appendRow(row)
                 self.mode.itemChanged.connect(self.dealItemChanged)
                 self.table_view.setModel(self.mode)
-                self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+                # self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+                self.table_view.resizeColumnsToContents()
+                self.table_view.resizeRowsToContents()
                 end = time.time()
                 self.status_bar.showMessage('数据加载完毕,耗时{}秒'.format(end-start))
             except Exception as e:
@@ -152,19 +154,27 @@ class WidgetDemo(QWidget):
                 pass
 
     def triggeredSave(self):
-        file_path, self.save = QFileDialog.getSaveFileName(self, '保存文件', './data',
+        self.status_bar.showMessage('保存文件', 5000)
+        file_path, _ = QFileDialog.getSaveFileName(self, '保存文件', './data',
                                                            'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv)')
-        # print(file_path)
-        wb = workbook.Workbook()
-        wb.encoding='utf-8'
-        wa = wb.active
+        if file_path == '':
+            return
         # 文件中写入数据
         try:
+            wb = workbook.Workbook()
+            wb.encoding = 'utf-8'
+            wa = wb.active
             for item in self.data:
+                # 过滤无效数据
+                if ''.join(item) == '':
+                    continue
                 wa.append(item)
             wb.save(file_path)
+            self.status_bar.showMessage('保存完毕！')
         except Exception as e:
-            pass
+            print(e)
+
+
 
     #数据变化信号处理
     def dealItemChanged(self,item):
@@ -215,6 +225,7 @@ class InputWindowDemo(QTabWidget):
 
     def initUI(self):
         self.setGeometry(500,100,1000,900)
+        self.setWindowIcon(QIcon('./image/导入.png'))
 
         #创建两个窗口
         #tab1：显示全部，tab2：只显示变量
