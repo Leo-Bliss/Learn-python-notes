@@ -12,11 +12,13 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import  QtWidgets
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget
-from PyQt5.QtWidgets import QTableView,QHBoxLayout
+from PyQt5.QtWidgets import QTableView,QHBoxLayout,QFileDialog
 from PyQt5.QtGui import QStandardItem,QStandardItemModel,QColor
 import matplotlib.pyplot as plt
 import sys
 import random
+import datetime
+from openpyxl import workbook
 
 from projects.demo.Work.TCM_DSAS.DataFrameListMTF import DataFrameListMTF as DTL
 
@@ -30,9 +32,10 @@ class AnalysisWindowDemo(QWidget):
         #需要的数据
         self.RMSE = None
         self.y_predict = None
+        self.plt = plt
 
         # 创建一个展示板
-        self.figure = plt.figure(facecolor='#66CCFF')
+        self.figure = self.plt.figure(facecolor='#66CCFF')
         self.canvas = FigureCanvas(self.figure)
         self.predict_button = QPushButton('预测')
         self.draw_button = QPushButton('绘图')
@@ -63,18 +66,18 @@ class AnalysisWindowDemo(QWidget):
         # 绑定信号
         self.draw_button.clicked.connect(self.onClickDraw)
         self.predict_button.clicked.connect(self.onClickPredict)
-        self.predict_button.clicked.connect(self.onClickOutput)
+        self.output_button.clicked.connect(self.onClickOutput)
 
     def onClickPredict(self):
         if self.y_predict is None:
             return
         self.predict_button.setEnabled(False)
-        model = QStandardItemModel()
+        self.model = QStandardItemModel()
         dtl = DTL()
         data_list = dtl.DataFrame_to_list(self.y_predict)
         for rows in data_list:
             row = [QStandardItem(str(cell)) for cell in rows]
-            model.appendRow(row)
+            self.model.appendRow(row)
         RMSE = ['old_RMSE:', self.RMSE[0], 'now_RMSE:', self.RMSE[1]]
         row = [QStandardItem(str(cell)) for cell in RMSE]
         #突出显示RMSE
@@ -82,19 +85,19 @@ class AnalysisWindowDemo(QWidget):
         row[1].setForeground(QColor(255, 0, 0))
         row[-1].setBackground(QColor(0, 255, 0))
         row[-1].setForeground(QColor(255, 0, 0))
-        model.appendRow(row)
-        self.table_view.setModel(model)
+        self.model.appendRow(row)
+        self.table_view.setModel(self.model)
 
 
     def onClickDraw(self):
         if self.y_predict is  None:
             return
-
+        self.plt = plt
         #这里开始就按照matlibplot的方式绘图
         try:
             # 中文乱码处理
-            plt.rcParams['font.sans-serif'] = ['SimHei']
-            plt.rcParams['axes.unicode_minus'] = False
+            self.plt.rcParams['font.sans-serif'] = ['SimHei']
+            self.plt.rcParams['axes.unicode_minus'] = False
 
             #数据
             index = random.sample(self.y_predict.index.tolist(), 10)
@@ -112,20 +115,20 @@ class AnalysisWindowDemo(QWidget):
             x = [str(i) for i in index]
 
 
-            # plt.plot(x, data, marker='.', mec='g', label='y')
-            plt.plot(x, data1, marker='o', mec='b', label='y_old_predict')
-            plt.plot(x, data2, marker='*', mec='r', label='y_now_predict')
+            # self.plt.plot(x, data, marker='.', mec='g', label='y')
+            self.plt.plot(x, data1, marker='o', mec='b', label='y_old_predict')
+            self.plt.plot(x, data2, marker='*', mec='r', label='y_now_predict')
 
             # label显示
-            plt.legend()
+            self.plt.legend()
 
             # x轴数值标记,这个一定要在后面加上
-            plt.xticks(x)
+            self.plt.xticks(x)
 
            #确定y轴数值范围
             minx = min(min(y_old_predict_list), min(y_now_predict_list))
             maxx = max(max(y_now_predict_list), max(y_old_predict_list))
-            plt.ylim(minx - 100, maxx + 500)
+            self.plt.ylim(minx - 100, maxx + 500)
 
             # # 标上数值
             # for x, y in enumerate(data1):
@@ -135,7 +138,8 @@ class AnalysisWindowDemo(QWidget):
             #     plt.text(x, y + 500, '%s' % y, ha='center')
 
             # 设置标题
-            plt.title("预测结果对比")
+            self.plt.title("预测结果对比")
+
 
             # 按照matlibplot的方式绘制之后，在窗口上绘制
             self.canvas.draw()
@@ -147,6 +151,31 @@ class AnalysisWindowDemo(QWidget):
     def onClickOutput(self):
         if self.y_predict is None:
             return
+        #输出表格中结果
+        file_path, self.save = QFileDialog.getSaveFileName(self, '保存文件', './result',
+                                                           'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv)')
+        wb = workbook.Workbook()
+        wb.encoding='utf-8'
+        wa = wb.active
+        # 文件中写入数据
+        try:
+            rows = self.model.rowCount()
+            columns = self.model.columnCount()
+            for i in range(rows):
+                item = []
+                for j in range(columns):
+                    item.append(self.model.index(i, j).data())
+                wa.append(item)
+            wb.save(file_path)
+        except Exception as e:
+            print(e)
+        try:
+            nowtime = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            self.plt.savefig('./result/res1.svg')
+        except:
+            pass
+
+
 
 
 
