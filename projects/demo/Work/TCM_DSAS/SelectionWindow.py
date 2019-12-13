@@ -13,9 +13,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QMessageBox,QStatusBar
 from PyQt5.QtWidgets import QLabel,QComboBox,QTextEdit,QLineEdit
-from PyQt5.QtWidgets import QPushButton,QToolBar,QAction
+from PyQt5.QtWidgets import QPushButton,QToolBar,QAction,QFileDialog
 from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout
-from PyQt5.QtGui import QIcon,QStandardItemModel,QStandardItem,QColor
+from PyQt5.QtGui import QIcon
 
 from projects.demo.Work.TCM_DSAS import SetParameterDialog
 from projects.demo.Work.TCM_DSAS import AnalysisWindow
@@ -33,9 +33,12 @@ class SelectionWindowdemo(QWidget):
     def initUI(self):
         self.resize(800,800)
         self.setWindowTitle('特征选择窗口')
+        self.setWindowIcon(QIcon('./image/选择.png'))
         self.parameter_dict = None
         self.data = None
         self.y_predict = None
+        self.df = None
+        self.res_list = None
 
 
         self.tool_bar = QToolBar()
@@ -86,6 +89,7 @@ class SelectionWindowdemo(QWidget):
         self.set_parameter.triggered.connect(self.getParameter)
         self.run.triggered.connect(self.runProcess)
         self.analysis.triggered.connect(self.runAnalysis)
+        self.save.triggered.connect(self.triggeredSave)
 
     #选择特征选择的算法
     def selectionChange1(self):
@@ -127,7 +131,7 @@ class SelectionWindowdemo(QWidget):
          self.parameter_dict = dic
          self.text_edit.setText(str(dic))
          self.run.setEnabled(True)
-
+    #执行特征选择
     def runProcess(self):
         if self.data is None or self.data[0][1] == '':
             QMessageBox.critical(self,'错误','请先导入数据',QMessageBox.Yes,QMessageBox.No)
@@ -140,6 +144,7 @@ class SelectionWindowdemo(QWidget):
             self.df = dtl.list_to_DataFrame(self.data)
             res_list = []
             start = time.time()
+            self.status_bar.showMessage('特征选择中...')
             print('特征选择中...')
             f = None
             if self.comb1.currentText() == 'FSFS':
@@ -148,17 +153,17 @@ class SelectionWindowdemo(QWidget):
                 f = Lasso.LassoDemo(self.df,self.parameter_dict)
             if f is None:
                 return
-            res_list = f.run()
+            self.res_list = f.run()
             #得到用于分析的数据
             self.RMSE, self.y_predict = f.analysis()
             end = time.time()
-            str_res = ',\n'.join(res_list)
+            str_res = ',\n'.join(self.res_list)
             res = '最终选择出的特征共{0}个:\n{1}'.format(len(res_list),str_res)
             self.text_edit.setText(res)
             self.status_bar.showMessage('特征选择完成,耗时{}秒'.format(end-start))
         except Exception as e:
             print(e)
-
+    #执行数据分析
     def runAnalysis(self):
         self.plot_widget = AnalysisWindow.AnalysisWindowDemo()
         if self.y_predict is not None:
@@ -166,28 +171,33 @@ class SelectionWindowdemo(QWidget):
             self.plot_widget.y_predict = self.y_predict
         self.plot_widget.show()
 
+    #将选出的特征所对应的数据分离出来保存为单独的文件
+    def triggeredSave(self):
+        if self.data is None or self.res_list is None:
+            return
+        file_path, _ = QFileDialog.getSaveFileName(self, '保存文件', './result',
+                                                           'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv)')
+        try:
+            best_features_df = self.df[self.res_list]
+            print(best_features_df)
+            name,type = file_path.split('.',maxsplit=1)
+            best_features_df.to_excel(excel_writer='{}_best.{}'.format(name,type),index=True,encoding='utf-8')
+            print('-'*100)
+            columns = self.df.columns.values.tolist()
+            other_features_df = self.df[[column for column in columns if column not in self.res_list]]
+            print(other_features_df)
+            other_features_df.to_excel(excel_writer='{}_other.{}'.format(name,type),index=True,encoding='utf-8')
+            self.status_bar.showMessage('保存完毕！')
+            print('保存完毕！')
+        except Exception as e:
+            print(e)
+            pass
 
 
 
 
 
 
-# def list_to_DataFrame(lst):
-#     df = pd.DataFrame(lst)
-#     index_list = list(df.iloc[1:,0])
-#     column_list = list(df.iloc[0,1:])
-#     data = df.iloc[1:,1:]
-#     data.index = index_list
-#     data.columns = column_list
-#     return data
-#
-# def DataFrame_to_list(df):
-#     data_list = [[''] + df.columns.values.tolist()]
-#     index_list = df.index.values.tolist()
-#     for i, item in enumerate(df.values.tolist()):
-#         data_list.append([index_list[i]] + item)
-#     # print(data_list)
-#     return data_list
 
 
 
