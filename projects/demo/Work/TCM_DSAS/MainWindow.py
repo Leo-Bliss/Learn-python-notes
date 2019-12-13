@@ -75,12 +75,9 @@ class MainWindowDemo(QWidget):
         hlayout = QHBoxLayout()
         hlayout.addWidget(self.list_widget)
         hlayout.addWidget(self.stack_widget)
-        size_policy1 = self.list_widget.sizePolicy()
-        size_policy2 = self.stack_widget.sizePolicy()
-        size_policy1.setHorizontalPolicy(1)
-        size_policy2.setHorizontalPolicy(9)
-        self.list_widget.setSizePolicy(size_policy1)
-        self.stack_widget.setSizePolicy(size_policy2)
+        #等比例划分布局
+        hlayout.setStretch(0,1)
+        hlayout.setStretch(1,5)
         self.setLayout(hlayout)
 
         #美化:

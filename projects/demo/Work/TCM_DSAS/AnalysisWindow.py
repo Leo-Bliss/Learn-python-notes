@@ -11,70 +11,144 @@
 '''
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import  QtWidgets
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget,QTextEdit
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget
+from PyQt5.QtWidgets import QTableView,QHBoxLayout
+from PyQt5.QtGui import QStandardItem,QStandardItemModel,QColor
 import matplotlib.pyplot as plt
 import sys
+import random
+
+from projects.demo.Work.TCM_DSAS.DataFrameListMTF import DataFrameListMTF as DTL
 
 
-class PlotWindowDemo(QWidget):
+class AnalysisWindowDemo(QWidget):
     def __init__(self):
-        super(PlotWindowDemo,self).__init__()
-        #创建一个展示板
+        super(AnalysisWindowDemo,self).__init__()
+        self.initUI()
+    def initUI(self):
+        self.setWindowTitle('分析预测')
+        #需要的数据
+        self.RMSE = None
+        self.y_predict = None
+
+        # 创建一个展示板
         self.figure = plt.figure(facecolor='#66CCFF')
         self.canvas = FigureCanvas(self.figure)
-        self.draw_button = QPushButton("绘图")
-        #显示用于分析的数据
-        self.text_edit = QTextEdit()
+        self.predict_button = QPushButton('预测')
+        self.draw_button = QPushButton('绘图')
+        self.output_button = QPushButton('导出')
+        # self.input_button = QPushButton('导入')
+        # 显示用于分析的数据
+        self.table_view = QTableView()
+        self.table_view.setModel(QStandardItemModel(100, 100))
 
-        #绑定信号
-        self.draw_button.clicked.connect(self.onClickDraw)
-
-        #设置布局
+        # 设置布局
+        hlayout = QHBoxLayout()
+        hlayout.addWidget(self.table_view)
+        vlayout = QVBoxLayout()
+        vlayout.addWidget(self.predict_button)
+        vlayout.addWidget(self.draw_button)
+        vlayout.addWidget(self.output_button)
+        # vlayout.addWidget(self.input_button)
+        vlayout.addStretch()
+        vlayout.setSpacing(10)
+        hlayout.addItem(vlayout)
         layout = QVBoxLayout()
-        layout.addWidget(self.draw_button)
+        layout.addItem(hlayout)
         layout.addWidget(self.canvas)
+        layout.setStretch(0, 1)
+        layout.setStretch(1, 1)
         self.setLayout(layout)
-        layout.addWidget(self.text_edit)
+
+        # 绑定信号
+        self.draw_button.clicked.connect(self.onClickDraw)
+        self.predict_button.clicked.connect(self.onClickPredict)
+        self.predict_button.clicked.connect(self.onClickOutput)
+
+    def onClickPredict(self):
+        if self.y_predict is None:
+            return
+        self.predict_button.setEnabled(False)
+        model = QStandardItemModel()
+        dtl = DTL()
+        data_list = dtl.DataFrame_to_list(self.y_predict)
+        for rows in data_list:
+            row = [QStandardItem(str(cell)) for cell in rows]
+            model.appendRow(row)
+        RMSE = ['old_RMSE:', self.RMSE[0], 'now_RMSE:', self.RMSE[1]]
+        row = [QStandardItem(str(cell)) for cell in RMSE]
+        #突出显示RMSE
+        row[1].setBackground(QColor(0, 255, 0))
+        row[1].setForeground(QColor(255, 0, 0))
+        row[-1].setBackground(QColor(0, 255, 0))
+        row[-1].setForeground(QColor(255, 0, 0))
+        model.appendRow(row)
+        self.table_view.setModel(model)
+
 
     def onClickDraw(self):
+        if self.y_predict is  None:
+            return
+
         #这里开始就按照matlibplot的方式绘图
-        data1 = [2211, 2323, 1560, 7788, 3322, 1000, 7089]
-        data2 = [1235, 3456, 666, 8886, 2323, 3000, 223]
+
         # 中文乱码处理
         plt.rcParams['font.sans-serif'] = ['SimHei']
         plt.rcParams['axes.unicode_minus'] = False
 
-        x = [str(i) + 'h' for i in range(1, len(data1) + 1)]
+        #数据
+        index = random.sample(self.y_predict.index.tolist(), 10)
+        y_list = self.y_predict['y'].tolist()
+        data = [item for i, item in enumerate(y_list) if i in index]
 
-        plt.plot(x, data1, marker='*', mec='r', label='股票1')
-        plt.plot(x, data2, marker='o', mec='b', lw=2, label='股票2')
+        y_old_predict_list = self.y_predict['y'].tolist()
+        data1 = [item for i, item in enumerate(y_old_predict_list) if i in index]
+
+        y_now_predict_list = self.y_predict['y'].tolist()
+        data2 = [item for i, item in enumerate(y_now_predict_list) if i in index]
+
+        #x轴数值标记
+        index.sort()
+        x = [str(i) for i in index]
+        plt.xticks(x)
+
+        # plt.plot(x, data, marker='.', mec='g', label='y')
+        plt.plot(x, data1, marker='o', mec='b', label='y_old_predict')
+        plt.plot(x, data2, marker='*', mec='r', label='y_now_predict')
 
         # label显示
         plt.legend()
 
-        # x轴标签
-        plt.xticks(x)
+       #确定y轴数值范围
+        minx = min(min(y_old_predict_list), min(y_now_predict_list))
+        maxx = max(max(y_now_predict_list), max(y_old_predict_list))
+        plt.ylim(minx - 100, maxx + 500)
 
-        plt.ylim(100, 10000)
+        # # 标上数值
+        # for x, y in enumerate(data1):
+        #     plt.text(x, y + 100, '%s' % y, ha='center')
+        #
+        # for x, y in enumerate(data2):
+        #     plt.text(x, y + 500, '%s' % y, ha='center')
 
-        # 标上数值
-        for x, y in enumerate(data1):
-            plt.text(x, y + 100, '%s' % y, ha='center')
+        # 设置标题
+        plt.title("预测结果对比")
 
-        for x, y in enumerate(data2):
-            plt.text(x, y + 500, '%s' % y, ha='center')
-
-        #设置标题
-        plt.title("股票价格波动")
-
-        #按照matlibplot的方式绘制之后，在窗口上绘制
+        # 按照matlibplot的方式绘制之后，在窗口上绘制
         self.canvas.draw()
+
+        self.draw_button.setEnabled(False)
+
+    def onClickOutput(self):
+        if self.y_predict is None:
+            return
+
 
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    main_window = PlotWindowDemo()
+    main_window = AnalysisWindowDemo()
     main_window.show()
     app.exec()
 

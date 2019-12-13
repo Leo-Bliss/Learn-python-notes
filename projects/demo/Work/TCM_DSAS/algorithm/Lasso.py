@@ -12,7 +12,6 @@ from sklearn import linear_model
 import pandas as pd
 import os
 import numpy as np
-from minepy import MINE
 import math
 
 
@@ -61,8 +60,8 @@ class LassoDemo():
                             range(len(self.now_x_data.values))]
         now_RMSE = get_RMSE(self.y_now_predict, self.y_data.values)
         old_RMSE = get_RMSE(self.y_old_predict, self.y_data.values)
-        print('now_RMSE:{},old_RMSE:{}'.format(now_RMSE, old_RMSE))
-        RMSE = now_RMSE, old_RMSE
+        print('old_RMSE:{},now_RMSE:{}'.format(old_RMSE,now_RMSE ))
+        RMSE = old_RMSE,now_RMSE
 
         compare = pd.DataFrame()
         compare['y'] = self.y_data.values

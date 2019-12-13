@@ -183,15 +183,15 @@ class FSFSDemo():
                 value = arr[0]
                 self.y_now_predict[key] = value
 
-        now_RMSE = get_RMSE(self.y_now_predict, self.y.values)
         old_RMSE = get_RMSE(self.y_old_predict, self.y.values)
-        print('now_RMSE:{},old_RMSE:{}'.format(now_RMSE, old_RMSE))
-        RMSE = now_RMSE, old_RMSE
+        now_RMSE = get_RMSE(self.y_now_predict, self.y.values)
+        print('old_RMSE:{},now_RMSE:{}'.format(old_RMSE,now_RMSE))
+        RMSE = old_RMSE,now_RMSE
 
         compare = pd.DataFrame()
         compare['y'] = self.y.values
         compare['y_old_predict'] = self.y_old_predict
-        compare['y_new_predict'] = self.y_now_predict
+        compare['y_now_predict'] = self.y_now_predict
         print(compare)
         return RMSE,compare
 
@@ -251,5 +251,5 @@ if __name__ == '__main__':
    }
    f = FSFSDemo(df,parameter_dict)
    f.run()
-   f.anlysis()
+   f.analysis()
 

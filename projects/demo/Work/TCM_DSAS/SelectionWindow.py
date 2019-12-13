@@ -15,14 +15,15 @@ from PyQt5.QtWidgets import QApplication,QWidget,QMessageBox,QStatusBar
 from PyQt5.QtWidgets import QLabel,QComboBox,QTextEdit,QLineEdit
 from PyQt5.QtWidgets import QPushButton,QToolBar,QAction
 from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon,QStandardItemModel,QStandardItem,QColor
+
 from projects.demo.Work.TCM_DSAS import SetParameterDialog
 from projects.demo.Work.TCM_DSAS import AnalysisWindow
 from projects.demo.Work.TCM_DSAS.algorithm import FSFS
 from projects.demo.Work.TCM_DSAS.algorithm import Lasso
 import time
 
-import pandas as pd
+from projects.demo.Work.TCM_DSAS.DataFrameListMTF import DataFrameListMTF as DTL
 
 class SelectionWindowdemo(QWidget):
     def __init__(self):
@@ -34,13 +35,13 @@ class SelectionWindowdemo(QWidget):
         self.setWindowTitle('特征选择窗口')
         self.parameter_dict = None
         self.data = None
-        self.handle_analysis = None
+        self.y_predict = None
 
 
         self.tool_bar = QToolBar()
         self.set_parameter = QAction(QIcon('./image/参数.png'),'设置参数',self)
         self.run = QAction(QIcon('./image/运行程序.png'),'运行程序',self)
-        self.analysis = QAction(QIcon('./image/对比分析.png'),'预测分析',self)
+        self.analysis = QAction(QIcon('./image/对比分析.png'),'分析预测',self)
         self.tool_bar.addAction(self.set_parameter)
         self.tool_bar.addAction(self.run)
         self.tool_bar.addAction(self.analysis)
@@ -131,7 +132,10 @@ class SelectionWindowdemo(QWidget):
             return
         try:
             self.run.setEnabled(False)
-            self.df = list_to_DataFrame(self.data)
+            # print(self.data)
+            # print('-'*100)
+            dtl = DTL()
+            self.df = dtl.list_to_DataFrame(self.data)
             res_list = []
             start = time.time()
             print('特征选择中...')
@@ -143,7 +147,8 @@ class SelectionWindowdemo(QWidget):
             if f is None:
                 return
             res_list = f.run()
-            self.handle_analysis = f
+            #得到用于分析的数据
+            self.RMSE, self.y_predict = f.analysis()
             end = time.time()
             str_res = ',\n'.join(res_list)
             res = '最终选择出的特征共{0}个:\n{1}'.format(len(res_list),str_res)
@@ -153,10 +158,10 @@ class SelectionWindowdemo(QWidget):
             print(e)
 
     def runAnalysis(self):
-        print('-'*100)
-        if self.handle_analysis is not None:
-            RMSE,y_predict = self.handle_analysis.analysis()
-        self.plot_widget = AnalysisWindow.PlotWindowDemo()
+        self.plot_widget = AnalysisWindow.AnalysisWindowDemo()
+        if self.y_predict is not None:
+            self.plot_widget.RMSE = self.RMSE
+            self.plot_widget.y_predict = self.y_predict
         self.plot_widget.show()
 
 
@@ -165,14 +170,25 @@ class SelectionWindowdemo(QWidget):
 
 
 
-def list_to_DataFrame(lst):
-    df = pd.DataFrame(lst)
-    index_list = list(df.iloc[1:,0])
-    column_list = list(df.iloc[0,1:])
-    data = df.iloc[1:,1:]
-    data.index = index_list
-    data.columns = column_list
-    return data
+# def list_to_DataFrame(lst):
+#     df = pd.DataFrame(lst)
+#     index_list = list(df.iloc[1:,0])
+#     column_list = list(df.iloc[0,1:])
+#     data = df.iloc[1:,1:]
+#     data.index = index_list
+#     data.columns = column_list
+#     return data
+#
+# def DataFrame_to_list(df):
+#     data_list = [[''] + df.columns.values.tolist()]
+#     index_list = df.index.values.tolist()
+#     for i, item in enumerate(df.values.tolist()):
+#         data_list.append([index_list[i]] + item)
+#     # print(data_list)
+#     return data_list
+
+
+
 
 
 
