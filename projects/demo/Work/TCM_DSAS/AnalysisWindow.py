@@ -11,13 +11,12 @@
 '''
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import  QtWidgets
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget,QStatusBar
 from PyQt5.QtWidgets import QTableView,QHBoxLayout,QFileDialog,QHeaderView
 from PyQt5.QtGui import QStandardItem,QStandardItemModel,QColor,QIcon
 import matplotlib.pyplot as plt
 import sys
 import random
-import datetime
 from openpyxl import workbook
 
 from projects.demo.Work.TCM_DSAS.DataFrameListMTF import DataFrameListMTF as DTL
@@ -45,6 +44,7 @@ class AnalysisWindowDemo(QWidget):
         # 显示用于分析的数据
         self.table_view = QTableView()
         self.table_view.setModel(QStandardItemModel(100, 100))
+        self.status_bar = QStatusBar()
 
         # 设置布局
         hlayout = QHBoxLayout()
@@ -57,16 +57,16 @@ class AnalysisWindowDemo(QWidget):
         
         hlayout1 = QHBoxLayout()
         hlayout1.addWidget(self.table_view)
-       
-        # hlayout.addItem(hlayout)
+
         layout = QVBoxLayout()
         layout.addItem(hlayout)
         layout.addItem(hlayout1)
-
         layout.addWidget(self.canvas)
+        layout.addWidget(self.status_bar)
         layout.setStretch(0, 1)
         layout.setStretch(1, 5)
         layout.setStretch(2,5)
+        layout.setStretch(3,1)
         self.setLayout(layout)
 
         # 绑定信号
@@ -74,6 +74,7 @@ class AnalysisWindowDemo(QWidget):
         self.predict_button.clicked.connect(self.onClickPredict)
         self.output_button.clicked.connect(self.onClickOutput)
 
+    #显示预测的结果
     def onClickPredict(self):
         if self.y_predict is None:
             return
@@ -95,7 +96,7 @@ class AnalysisWindowDemo(QWidget):
         self.table_view.setModel(self.model)
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
-
+    #绘制可视化图形
     def onClickDraw(self):
         if self.y_predict is  None:
             return
@@ -155,6 +156,7 @@ class AnalysisWindowDemo(QWidget):
 
         self.draw_button.setEnabled(False)
 
+    #导出数据分析结果
     def onClickOutput(self):
         if self.y_predict is None:
             return
@@ -176,11 +178,13 @@ class AnalysisWindowDemo(QWidget):
             wb.save(file_path)
         except Exception as e:
             print(e)
+            return
         try:
-            nowtime = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-            self.plt.savefig('./result/res1.svg')
+            self.plt.savefig('{}_img.svg'.format(file_path.split('.',maxsplit=1)[0]))
         except:
             pass
+        self.status_bar.showMessage('导出完毕!',5000)
+        print('导出完毕!')
 
 
 
