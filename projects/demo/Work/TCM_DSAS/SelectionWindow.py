@@ -158,7 +158,7 @@ class SelectionWindowdemo(QWidget):
             self.RMSE, self.y_predict = f.analysis()
             end = time.time()
             str_res = ',\n'.join(self.res_list)
-            res = '最终选择出的特征共{0}个:\n{1}'.format(len(res_list),str_res)
+            res = '最终选择出的特征共{0}个:\n{1}'.format(len(self.res_list),str_res)
             self.text_edit.setText(res)
             self.status_bar.showMessage('特征选择完成,耗时{}秒'.format(end-start))
         except Exception as e:
@@ -177,21 +177,22 @@ class SelectionWindowdemo(QWidget):
             return
         file_path, _ = QFileDialog.getSaveFileName(self, '保存文件', './result',
                                                            'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv)')
+        if file_path == '':
+            return
         try:
             best_features_df = self.df[self.res_list]
-            print(best_features_df)
+            # print(best_features_df)
             name,type = file_path.split('.',maxsplit=1)
             best_features_df.to_excel(excel_writer='{}_best.{}'.format(name,type),index=True,encoding='utf-8')
-            print('-'*100)
+            # print('-'*100)
             columns = self.df.columns.values.tolist()
             other_features_df = self.df[[column for column in columns if column not in self.res_list]]
-            print(other_features_df)
+            # print(other_features_df)
             other_features_df.to_excel(excel_writer='{}_other.{}'.format(name,type),index=True,encoding='utf-8')
             self.status_bar.showMessage('保存完毕！')
-            print('保存完毕！')
+            # print('保存完毕！')
         except Exception as e:
             print(e)
-            pass
 
 
 
