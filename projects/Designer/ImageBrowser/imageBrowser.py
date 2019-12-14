@@ -12,7 +12,6 @@ import sys
 from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QWidget
 from PyQt5.QtGui import QPalette,QPixmap
 from PyQt5.QtCore import Qt
-from projects.Designer import imageBrowser_icon_rc
 
 
 class Ui_MainWindow(QWidget):
