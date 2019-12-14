@@ -18,7 +18,9 @@ from PyQt5.QtGui import QIcon,QPixmap,QPalette,QBrush
 
 from projects.demo.Work.TCM_DSAS import InputWindow as IW
 from projects.demo.Work.TCM_DSAS import SelectionWindow as SW
+from projects.demo.Work.TCM_DSAS import DataCenterWindow
 from projects.demo.Work.TCM_DSAS import ContactWindow
+from projects.demo.Work.TCM_DSAS import AboutUSWindow
 
 class MainWindowDemo(QWidget):
     def __init__(self):
@@ -31,7 +33,7 @@ class MainWindowDemo(QWidget):
         self.setWindowTitle('中医药数据特征选择分析平台')
 
         self.list_widget = QListWidget()
-        self.item_list = ['平台首页','数据导入','特征选择','数据中心','算法中心','知识中心','反馈建议','关注我们']
+        self.item_list = ['平台首页','数据导入','特征选择','数据中心','算法中心','知识中心','反馈建议','关于我们']
         self.list_widget.addItems(self.item_list)
         item1 = QListWidgetItem()
         self.list_widget.addItem(item1)
@@ -56,10 +58,11 @@ class MainWindowDemo(QWidget):
         self.input_widget = IW.InputWindowDemo()
         self.select_feature_widget = SW.SelectionWindowdemo()
         # self.analyze_data_widget = QWidget()
-        self.database_widget = QWidget()
+        self.database_widget = DataCenterWindow.DataCenterWindow()
         self.algorithm_widget = QWidget()
         self.konwledge_widget = QWidget()
         self.contact_widget = ContactWindow.ConcatWindow()
+        self.about_widget = AboutUSWindow.AboutUSWindowDemo()
 
         #将各个功能子窗口压入栈窗口
         self.stack_widget = QStackedWidget()
@@ -71,6 +74,7 @@ class MainWindowDemo(QWidget):
         self.stack_widget.addWidget(self.algorithm_widget)
         self.stack_widget.addWidget(self.konwledge_widget)
         self.stack_widget.addWidget(self.contact_widget)
+        self.stack_widget.addWidget(self.about_widget)
 
         #布局
         hlayout = QHBoxLayout()
