@@ -88,9 +88,9 @@ class AnalysisWindowDemo(QWidget):
         RMSE = ['old_RMSE:', self.RMSE[0], 'now_RMSE:', self.RMSE[1]]
         row = [QStandardItem(str(cell)) for cell in RMSE]
         #突出显示RMSE
-        row[1].setBackground(QColor(0, 255, 0))
+        row[1].setBackground(QColor(255, 255, 0))
         row[1].setForeground(QColor(255, 0, 0))
-        row[-1].setBackground(QColor(0, 255, 0))
+        row[-1].setBackground(QColor(255, 255, 0))
         row[-1].setForeground(QColor(255, 0, 0))
         self.model.appendRow(row)
         self.table_view.setModel(self.model)
@@ -163,6 +163,8 @@ class AnalysisWindowDemo(QWidget):
         #输出表格中结果
         file_path, self.save = QFileDialog.getSaveFileName(self, '保存文件', './result',
                                                            'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv)')
+        if file_path == '':
+            return
         wb = workbook.Workbook()
         wb.encoding='utf-8'
         wa = wb.active
