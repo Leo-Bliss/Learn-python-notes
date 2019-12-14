@@ -33,20 +33,21 @@ smtp_server = 'smtp.163.com'
 
 
 #邮件内容
-content = '科研实践2333'
+content = '科研实践'
 new_msg = MIMEText(content,'plain','utf-8')
-
+to_address = ['2638961251@qq.com','15270684004@163.com']
 #主题
-new_msg['Subject'] = '科研实践项目反馈邮件'
+new_msg['Subject'] = '科研实践项目'
 new_msg['From'] = from_address
-new_msg['To'] = to_address
+
+new_msg['To'] = ','.join(to_address)
 
 
 try:
     server = smtplib.SMTP(smtp_server, port=25)
     server.set_debuglevel(1)
     server.login(from_address, password)
-    server.sendmail(from_address,to_address,new_msg.as_string())
+    server.sendmail(new_msg['From'],new_msg['To'].split(','),new_msg.as_string())
     server.quit()
     print('发送成功！')
 except Exception as e:
