@@ -112,6 +112,8 @@ class VariableSettingWindowDemo(QDialog):
         self.button21.clicked.connect(lambda :self.onClickButton(self.list_widget2,self.list_widget1))
         self.button13.clicked.connect(lambda :self.onClickButton(self.list_widget1,self.list_widget3))
         self.button31.clicked.connect(lambda :self.onClickButton(self.list_widget3,self.list_widget1))
+        self.button1.clicked.connect(self.sendSignal)
+        self.button2.clicked.connect(self.close)
 
     def onClickButton(self,sender,reciever):
         try:
@@ -123,8 +125,10 @@ class VariableSettingWindowDemo(QDialog):
             print(e)
 
     def sendSignal(self):
-        independ_var = [item.text() for item in self.list_widget2.items()]
-        depend_var = [item.text() for item in self.list_widget2.items()]
+        count1 = self.list_widget2.count()
+        count2 = self.list_widget3.count()
+        independ_var = [self.list_widget2.item(i).text() for i in range(count1)]
+        depend_var = [self.list_widget3.item(i).text() for i in range(count2)]
         var_list = [independ_var, depend_var]
         self.signal.send(var_list)
         self.close()

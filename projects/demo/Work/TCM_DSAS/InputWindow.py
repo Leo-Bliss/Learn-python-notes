@@ -408,13 +408,12 @@ class WidgetDemo(QWidget):
         # 设置变量窗口
         var_list = self.data[0] if self.data[0][0]!='' else self.data[0][1:]
         self.dialog = VariableSettingWindow.VariableSettingWindowDemo(var_list)
-        self.dialog.button1.clicked.connect(self.getVarList())
+        self.dialog.signal.sender.connect(self.getVarList)
         self.dialog.show()
 
-    # def getVarList(self,lst):
-    #
-    #     self.var_list = lst
-    #     print(lst)
+    def getVarList(self,lst):
+        self.var_list = lst
+        # print(lst)
 
 
 

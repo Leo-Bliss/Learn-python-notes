@@ -106,7 +106,7 @@ class MainWindowDemo(QWidget):
         print(index)
         if index == 2:
             data = self.input_widget.tab1.data
-            var_list = self.input_widget.var_list
+            var_list = self.input_widget.tab1.var_list
             try:
                 self.select_feature_widget.data = data
                 self.select_feature_widget.var_list = var_list
