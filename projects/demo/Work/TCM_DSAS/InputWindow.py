@@ -16,12 +16,14 @@ import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget
 from PyQt5.QtWidgets import QTableView,QFileDialog,QPushButton
 from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar,QAction,QHBoxLayout
-from PyQt5.QtWidgets import QVBoxLayout,QHeaderView,QSizePolicy,QLineEdit
+from PyQt5.QtWidgets import QVBoxLayout,QSizePolicy,QLineEdit
 from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem,QColor
 from PyQt5.QtCore import Qt,QDir
 from openpyxl import workbook
 import xlrd
 import time
+
+from projects.demo.Work.TCM_DSAS import VariableSettingWindow
 
 #查找替换窗口
 class  FindWidget(QWidget):
@@ -100,6 +102,7 @@ class WidgetDemo(QWidget):
         self.data = [['']*100 for i in range(15000)]
         self.res_pos = []
         self.focus_pos = None
+        self.var_list = None
         #菜单栏
         self.menu = QMenuBar()
         self.file = self.menu.addMenu('文件')
@@ -151,6 +154,9 @@ class WidgetDemo(QWidget):
         self.tool_bar.addAction(self.copy)
         self.tool_bar.addAction(self.paste)
         self.tool_bar.addAction(self.find)
+        self.setting = QAction('变量设置')
+        self.setting.setEnabled(False)
+        self.tool_bar.addAction(self.setting)
         # self.tool_bar.addAction(self.replace)
 
         # #tool文本显示在下方
@@ -192,6 +198,8 @@ class WidgetDemo(QWidget):
         self.find_widget.close.triggered.connect(self.triggeredHideFind)
         self.find_widget.repalce_button.clicked.connect(self.onClickReplace)
         self.find_widget.repalceAll_button.clicked.connect(self.onClickReplaceAll)
+        self.setting.triggered.connect(self.triggeredSetting)
+
 
         #美化
         icon = QIcon()
@@ -209,6 +217,8 @@ class WidgetDemo(QWidget):
         self.paste.setIcon(icon)
         icon.addPixmap(QPixmap('./image/查找1.png'), QIcon.Normal, QIcon.Off)
         self.find.setIcon(icon)
+        icon.addPixmap(QPixmap('./image/设置.png'), QIcon.Normal, QIcon.Off)
+        self.setting.setIcon(icon)
         # icon.addPixmap(QPixmap('./image/替换.png'), QIcon.Normal, QIcon.Off)
         # self.replace.setIcon(icon)
 
@@ -239,6 +249,7 @@ class WidgetDemo(QWidget):
                 self.table_view.resizeRowsToContents()
                 end = time.time()
                 self.status_bar.showMessage('数据加载完毕,耗时{}秒'.format(end-start))
+                self.setting.setEnabled(True)
             except Exception as e:
                 print(e)
                 pass
@@ -392,6 +403,18 @@ class WidgetDemo(QWidget):
 
     def onClickReplaceAll(self):
         pass
+    #设置变量
+    def triggeredSetting(self):
+        # 设置变量窗口
+        var_list = self.data[0] if self.data[0][0]!='' else self.data[0][1:]
+        self.dialog = VariableSettingWindow.VariableSettingWindowDemo(var_list)
+        self.dialog.button1.clicked.connect(self.getVarList())
+        self.dialog.show()
+
+    # def getVarList(self,lst):
+    #
+    #     self.var_list = lst
+    #     print(lst)
 
 
 
