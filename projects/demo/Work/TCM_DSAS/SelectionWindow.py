@@ -137,6 +137,9 @@ class SelectionWindowdemo(QWidget):
         if self.data is None or self.data[0][1] == '':
             QMessageBox.critical(self,'错误','请先导入数据',QMessageBox.Yes,QMessageBox.No)
             return
+        if self.var_list is None:
+                QMessageBox.information(self, '提示', '请在数据导入页设置变量', QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+                return
         try:
             self.run.setEnabled(False)
             # print(self.data)

@@ -11,9 +11,9 @@
 '''
 
 import sys
-from PyQt5.QtWidgets import QApplication,QWidget,QLabel,QPushButton
+from PyQt5.QtWidgets import QApplication,QWidget,QMessageBox
 from PyQt5.QtWidgets import QListWidget,QListWidgetItem,QStackedWidget
-from PyQt5.QtWidgets import QHBoxLayout,QSizePolicy,QStyleFactory
+from PyQt5.QtWidgets import QHBoxLayout,QStyleFactory
 from PyQt5.QtGui import QIcon,QPixmap,QPalette,QBrush
 
 from projects.demo.Work.TCM_DSAS import InputWindow as IW
@@ -112,10 +112,11 @@ class MainWindowDemo(QWidget):
                 self.select_feature_widget.var_list = var_list
             except:
                 pass
-
-
-
         self.stack_widget.setCurrentIndex(index)
+
+
+
+
 
 
 
