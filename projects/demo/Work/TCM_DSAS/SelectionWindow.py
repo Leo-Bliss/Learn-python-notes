@@ -39,6 +39,7 @@ class SelectionWindowdemo(QWidget):
         self.y_predict = None
         self.df = None
         self.res_list = None
+        self.var_list = None
 
 
         self.tool_bar = QToolBar()
@@ -108,7 +109,7 @@ class SelectionWindowdemo(QWidget):
     #搜索算法
     def clickSearch(self):
         text = self.line_edit.text()
-        index = self.comb1.findText(text,)
+        index = self.comb1.findText(text)
         if index != -1:
             self.comb1.setCurrentIndex(index)
         else:
@@ -148,9 +149,9 @@ class SelectionWindowdemo(QWidget):
             print('特征选择中...')
             f = None
             if self.comb1.currentText() == 'FSFS':
-                f = FSFS.FSFSDemo(self.df,self.parameter_dict)
+                f = FSFS.FSFSDemo(self.df,self.var_list,self.parameter_dict)
             elif self.comb1.currentText() == 'Lasso':
-                f = Lasso.LassoDemo(self.df,self.parameter_dict)
+                f = Lasso.LassoDemo(self.df,self.var_list,self.parameter_dict)
             if f is None:
                 return
             self.res_list = f.run()

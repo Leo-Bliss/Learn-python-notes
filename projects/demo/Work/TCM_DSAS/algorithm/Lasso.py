@@ -21,11 +21,11 @@ import math
   其本质就是在常规的线性回归的基础上对参数加了一个L1正则化约束。
 '''
 class LassoDemo():
-    def __init__(self,df,parameter_dict):
+    def __init__(self,df,var_list,parameter_dict):
         self.df = df
         self.x_labels = self.df.columns.values
-        self.x_data = self.df[self.x_labels[0:-1]]
-        self.y_data = self.df[self.x_labels[-1]]
+        self.x_data = self.df[var_list[0]]
+        self.y_data = self.df[var_list[1][0]]
         self.lasso_model = linear_model.Lasso(alpha=parameter_dict.get('alpha'), max_iter=parameter_dict.get('max_iter'))
         self.best_features = []
     
@@ -83,13 +83,15 @@ if __name__=='__main__':
     os.chdir('..')
     # print(os.getcwd())
     # print(os.path.abspath('.'))
-    path = r'./data/data1.xlsx'
-    df2 = pd.read_excel(path,index_col=0)
+    path = r'./data/data2.xlsx'
+    df = pd.read_excel(path,index_col=0)
     parameter_dict = {
         'alpha':50,
         'max_iter':20000,
     }
-    lasso = LassoDemo(df2,parameter_dict)
+    header_list = df.columns.values.tolist()
+    var_list = [header_list[:-1], [header_list[-1]]]
+    lasso = LassoDemo(df,var_list,parameter_dict)
     lasso.run()
     lasso.analysis()
 

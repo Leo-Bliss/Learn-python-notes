@@ -54,7 +54,7 @@ class MainWindowDemo(QWidget):
         self.list_widget.setSpacing(5)
 
         #创建各个功能子窗口
-        self.interface_widget = QWidget()
+        self.interface_widget = IntefaceWindow()
         self.input_widget = IW.InputWindowDemo()
         self.select_feature_widget = SW.SelectionWindowdemo()
         # self.analyze_data_widget = QWidget()
@@ -90,7 +90,7 @@ class MainWindowDemo(QWidget):
         self.list_widget.setFrameShape(False)
         #icon
         self.setWindowIcon(QIcon('./image/分析.png'))
-        #背景图片
+        # 背景图片
         # palette = QPalette()
         # pix = QPixmap(r'./')
         # pix.scaled(self.width(),self.height())
@@ -106,8 +106,10 @@ class MainWindowDemo(QWidget):
         print(index)
         if index == 2:
             data = self.input_widget.tab1.data
+            var_list = self.input_widget.var_list
             try:
                 self.select_feature_widget.data = data
+                self.select_feature_widget.var_list = var_list
             except:
                 pass
 
@@ -116,6 +118,17 @@ class MainWindowDemo(QWidget):
         self.stack_widget.setCurrentIndex(index)
 
 
+
+
+class IntefaceWindow(QWidget):
+    def __init__(self):
+        super(IntefaceWindow,self).__init__()
+        # 背景图片
+        palette = QPalette()
+        pix = QPixmap(r'./image/1.png')
+        pix.scaled(self.width(),self.height())
+        palette.setBrush(QPalette.Background,QBrush(pix))
+        self.setPalette(palette)
 
 
 

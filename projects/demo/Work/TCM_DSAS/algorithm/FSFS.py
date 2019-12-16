@@ -24,10 +24,12 @@ from minepy import MINE
 import os
 
 class FSFSDemo():
-    def __init__(self,df,parameter_dict):
+    def __init__(self,df,var_list,parameter_dict):
         self.n_components = parameter_dict.get('n_components')
         self.pls = PLSRegression(n_components=self.n_components,scale=True)
         self.df = df
+        self.independent_var = var_list[0]
+        self.dependent_var = var_list[1]
         self.topK = parameter_dict.get('topK')
         self.K = parameter_dict.get('K')
         self.step = parameter_dict.get('step')
@@ -40,12 +42,13 @@ class FSFSDemo():
         self.header_list = list(self.df.columns.values)
         index_list = list(self.df.index.values)
 
-        self.y_old_predict = [0] * len(index_list)
-        self.y_now_predict = [0] * len(index_list)
+        n = len(index_list)
+        self.y_old_predict = [0] * n
+        self.y_now_predict = [0] * n
 
         # 自变量X，因变量y
-        self.X = self.df[self.header_list[:-1]]
-        self.y = self.df[self.header_list[-1]]
+        self.X = self.df[self.independent_var]
+        self.y = self.df[self.dependent_var[0]]
 
     def run(self):
         #将数据分为k份，k折交叉验证
@@ -58,14 +61,14 @@ class FSFSDemo():
             y_train_tmp = np.array(y_train)
 
             #转换为DataFrame格式便于计算
-            X_train = pd.DataFrame(X_train,index=train_index,columns=self.header_list[:-1])
-            y_train = pd.DataFrame(y_train.values,index=train_index,columns=[self.header_list[-1]])
+            X_train = pd.DataFrame(X_train,index=train_index,columns=self.independent_var)
+            y_train = pd.DataFrame(y_train.values,index=train_index,columns=[self.dependent_var])
 
             X_test,y_test = self.X.values[test_index],self.y[test_index]
             # y_test_tmp = np.array(y_test)
 
-            X_test = pd.DataFrame(X_test,index=test_index,columns=self.header_list[:-1])
-            y_test = pd.DataFrame(y_test.values,index=test_index,columns=[self.header_list[-1]])
+            X_test = pd.DataFrame(X_test,index=test_index,columns=self.independent_var)
+            y_test = pd.DataFrame(y_test.values,index=test_index,columns=[self.dependent_var])
 
             #训练得到相关参数，即得到拟合方程
             self.pls.fit(X_train, y_train)
@@ -168,7 +171,7 @@ class FSFSDemo():
 
             # 转换为DataFrame格式便于计算
             X_train = pd.DataFrame(X_train, index=train_index, columns=self.best_features)
-            y_train = pd.DataFrame(y_train.values, index=train_index, columns=[self.header_list[-1]])
+            y_train = pd.DataFrame(y_train.values, index=train_index, columns=[self.dependent_var])
 
             X_test, y_test = now_X.values[test_index], self.y[test_index]
             X_test = pd.DataFrame(X_test, index=test_index, columns=self.best_features)
@@ -239,7 +242,7 @@ def pearson(vector1, vector2):
 if __name__ == '__main__':
 
    os.chdir('..')
-   file_name = 'data1.xlsx'
+   file_name = 'data2.xlsx'
    path = '{0}\data\{1}'.format(os.path.abspath('.'),file_name)
    df = pd.read_excel(path, sheet_name='Sheet1', index_col=0)
    parameter_dict = {
@@ -249,7 +252,9 @@ if __name__ == '__main__':
        'step': 10,
        'alp': 5,
    }
-   f = FSFSDemo(df,parameter_dict)
+   header_list = df.columns.values.tolist()
+   var_list = [header_list[:-1],[header_list[-1]]]
+   f = FSFSDemo(df,var_list,parameter_dict)
    f.run()
    f.analysis()
 
