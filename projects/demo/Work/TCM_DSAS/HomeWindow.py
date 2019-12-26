@@ -32,11 +32,9 @@ class HomeWindow(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        # todo 1 设置背景颜色
-
         painter.drawRect(self.rect())
-        # #todo 2 设置背景图片，平铺到整个窗口，随着窗口改变而改变
-        pixmap = QPixmap('./image/page2.png')
+        # todo 设置背景图片，平铺到整个窗口，随着窗口改变而改变
+        pixmap = QPixmap('./image/page1.png')
         painter.drawPixmap(self.rect(), pixmap)
 
 
