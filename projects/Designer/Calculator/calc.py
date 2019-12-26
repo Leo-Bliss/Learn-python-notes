@@ -18,13 +18,13 @@ class Ui_widget(object):
 
         # 背景图片
         palette1 = QPalette()
-        pix = QPixmap('D:\Learn-python-notes\projects\demo\Calculator\photos\starrySky.jpg')
+        pix = QPixmap('./photos/starrySky.jpg')
         pix = pix.scaled(660, 660)
         palette1.setBrush(QPalette.Background, QBrush(pix))
         widget.setPalette(palette1)
         # 左上角图标
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap("D:\Learn-python-notes\projects\demo\Calculator\photos\calc1.png"), QtGui.QIcon.Normal,
+        self.icon.addPixmap(QtGui.QPixmap("./photos/calc1.png"), QtGui.QIcon.Normal,
                             QtGui.QIcon.Off)
         widget.setWindowIcon(self.icon)
 
