@@ -21,6 +21,7 @@ from projects.demo.Work.TCM_DSAS import SelectionWindow as SW
 from projects.demo.Work.TCM_DSAS import DataCenterWindow
 from projects.demo.Work.TCM_DSAS import ContactWindow
 from projects.demo.Work.TCM_DSAS import AboutUSWindow
+from projects.demo.Work.TCM_DSAS import HomeWindow
 
 class MainWindowDemo(QWidget):
     def __init__(self):
@@ -29,7 +30,7 @@ class MainWindowDemo(QWidget):
         QApplication.setStyle(QStyleFactory.keys()[2])
 
     def initUI(self):
-        self.setGeometry(450,100,1000,800)
+        self.setGeometry(450,100,1200,800)
         self.setWindowTitle('中医药数据特征选择分析平台')
 
         self.list_widget = QListWidget()
@@ -54,7 +55,7 @@ class MainWindowDemo(QWidget):
         self.list_widget.setSpacing(5)
 
         #创建各个功能子窗口
-        self.interface_widget = IntefaceWindow()
+        self.interface_widget = HomeWindow.HomeWindow()
         self.input_widget = IW.InputWindowDemo()
         self.select_feature_widget = SW.SelectionWindowdemo()
         # self.analyze_data_widget = QWidget()
@@ -121,15 +122,7 @@ class MainWindowDemo(QWidget):
 
 
 
-class IntefaceWindow(QWidget):
-    def __init__(self):
-        super(IntefaceWindow,self).__init__()
-        # 背景图片
-        palette = QPalette()
-        pix = QPixmap(r'./image/1.png')
-        pix.scaled(self.width(),self.height())
-        palette.setBrush(QPalette.Background,QBrush(pix))
-        self.setPalette(palette)
+
 
 
 
