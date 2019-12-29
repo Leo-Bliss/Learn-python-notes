@@ -8,6 +8,7 @@
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 import random
 
 
@@ -16,6 +17,20 @@ class Splash(QWidget):
         super().__init__()
 
         self.resize(600,600)
+
+        #右键菜单栏
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.contextMenu = QMenu()
+        self.addRowAction = self.contextMenu.addAction('增加一行')
+        self.addRowAction.triggered.connect(self.addRow)
+        self.delRowAction = self.contextMenu.addAction('删除一行')
+        self.delRowAction.triggered.connect(lambda: self.model.removeRow(self.table.currentIndex().row()))
+        self.addColumnAction = self.contextMenu.addAction('增加一列')
+        self.addColumnAction.triggered.connect(self.addColumn)
+        self.delColumnAction = self.contextMenu.addAction('删除一列')
+        self.delColumnAction.triggered.connect(lambda: self.model.removeColumn(self.table.currentIndex().column()))
+        self.customContextMenuRequested.connect(self.rightMenuShow)
+
         # CREATE THE TABLE
         self.table = QTableView(self)  # SELECTING THE VIEW
         self.table.setGeometry(0, 0, 575, 575)
@@ -96,6 +111,18 @@ class Splash(QWidget):
             self.model.appendRow(row)
 
         # self.show()
+
+    def rightMenuShow(self):
+        try:
+            # 2菜单显示的位置
+            self.contextMenu.popup(QCursor.pos())
+            self.contextMenu.show()
+        except Exception as e:
+            print(e)
+
+    # def actionHandler(self):
+    #     print('action')
+    #     self.addRow()
 
 
 if __name__ == '__main__':
