@@ -13,11 +13,11 @@
 '''
 
 import sys
-from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget
+from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget,QMenu
 from PyQt5.QtWidgets import QTableView,QFileDialog,QPushButton
 from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar,QAction,QHBoxLayout
 from PyQt5.QtWidgets import QVBoxLayout,QSizePolicy,QLineEdit
-from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem,QColor
+from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem,QColor,QCursor
 from PyQt5.QtCore import Qt,QDir
 from openpyxl import workbook
 import xlrd
@@ -91,12 +91,12 @@ class  FindWidget(QWidget):
 
 
 class WidgetDemo(QWidget):
-    def __init__(self,mode):
+    def __init__(self,model):
         super(WidgetDemo,self).__init__()
-        self.mode = mode
-        self.initUI(mode)
+        self.model = model
+        self.initUI(model)
 
-    def initUI(self,mode):
+    def initUI(self,model):
         self.resize(800,800)
         #这里初始化，便于直接输入数据
         self.data = [['']*100 for i in range(15000)]
@@ -168,12 +168,24 @@ class WidgetDemo(QWidget):
 
         #表格
         self.table_view = QTableView()
-        self.table_view.setModel(self.mode)
+        self.table_view.setModel(self.model)
 
         #状态栏
         self.status_bar = QStatusBar()
         self.status_bar.showMessage('这是一个状态栏')
 
+        # 右键菜单栏
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.context_menu = QMenu()
+        self.addRow_action = self.context_menu.addAction('增加一行')
+        self.addRow_action.triggered.connect(self.addRow)
+        self.delRow_action = self.context_menu.addAction('删除一行')
+        self.delRow_action.triggered.connect(lambda: self.model.removeRow(self.table_view.currentIndex().row()))
+        self.addColumn_action = self.context_menu.addAction('增加一列')
+        self.addColumn_action.triggered.connect(self.addColumn)
+        self.delColumn_action = self.context_menu.addAction('删除一列')
+        self.delColumn_action.triggered.connect(lambda: self.model.removeColumn(self.table_view.currentIndex().column()))
+        self.customContextMenuRequested.connect(self.rightMenuShow)
 
         #创建布局
         layout = QVBoxLayout()
@@ -187,7 +199,7 @@ class WidgetDemo(QWidget):
         #关联信号
         self.open.triggered.connect(self.triggeredOpen)
         self.save.triggered.connect(self.triggeredSave)
-        self.mode.itemChanged.connect(self.dealItemChanged)
+        self.model.itemChanged.connect(self.dealItemChanged)
         self.tool_view.triggered.connect(self.triggeredView)
         self.statu_view.triggered.connect(self.triggeredView)
         self.new.triggered.connect(self.triggeredNew)
@@ -238,12 +250,12 @@ class WidgetDemo(QWidget):
                 #这里读取数据返回列表便于表格中数据的更新
                 data_list = read_xlsx(file_name)
                 self.data = data_list
-                self.mode = QStandardItemModel()
+                self.model = QStandardItemModel()
                 for rows in data_list:
                     row = [QStandardItem(str(cell)) for cell in rows]
-                    self.mode.appendRow(row)
-                self.mode.itemChanged.connect(self.dealItemChanged)
-                self.table_view.setModel(self.mode)
+                    self.model.appendRow(row)
+                self.model.itemChanged.connect(self.dealItemChanged)
+                self.table_view.setModel(self.model)
                 # self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
                 self.table_view.resizeColumnsToContents()
                 self.table_view.resizeRowsToContents()
@@ -318,7 +330,7 @@ class WidgetDemo(QWidget):
     def positionFocus(self,x,y):
         self.table_view.verticalScrollBar().setSliderPosition(x)
         self.table_view.horizontalScrollBar().setSliderPosition(y)
-        self.table_view.openPersistentEditor(self.mode.index(x, y))
+        self.table_view.openPersistentEditor(self.model.index(x, y))
         self.table_view.setFocus()
 
     #得到所以匹配项的位置
@@ -336,7 +348,7 @@ class WidgetDemo(QWidget):
                 if text == str(cell):
                     # print(i,j)
                     self.res_pos.append((i,j))
-                    item = self.mode.item(i,j)
+                    item = self.model.item(i,j)
                     item.setBackground(QColor(255, 255, 0))
                     item.setForeground(QColor(255, 0, 0))
                     #转到到第一个匹配值的位置，并处于可编辑状态
@@ -352,7 +364,7 @@ class WidgetDemo(QWidget):
             return
         try:
             self.table_view.closePersistentEditor(
-                self.mode.index(self.res_pos[self.focus_pos][0],self.res_pos[self.focus_pos][1]))
+                self.model.index(self.res_pos[self.focus_pos][0],self.res_pos[self.focus_pos][1]))
             x, y = self.res_pos[self.focus_pos + 1]
             self.positionFocus(x,y)
             self.focus_pos += 1
@@ -366,7 +378,7 @@ class WidgetDemo(QWidget):
             return
         try:
             self.table_view.closePersistentEditor(
-                self.mode.index(self.res_pos[self.focus_pos][0], self.res_pos[self.focus_pos][1]))
+                self.model.index(self.res_pos[self.focus_pos][0], self.res_pos[self.focus_pos][1]))
             x, y = self.res_pos[self.focus_pos - 1]
             self.positionFocus(x, y)
             self.focus_pos -= 1
@@ -377,10 +389,10 @@ class WidgetDemo(QWidget):
     def triggeredHideFind(self):
         if self.res_pos is not None and len(self.res_pos):
             self.table_view.closePersistentEditor(
-                self.mode.index(self.res_pos[self.focus_pos][0], self.res_pos[self.focus_pos][1]))
+                self.model.index(self.res_pos[self.focus_pos][0], self.res_pos[self.focus_pos][1]))
             for item in self.res_pos:
                 x,y = item
-                item = self.mode.item(x,y)
+                item = self.model.item(x,y)
                 item.setBackground(QColor(255, 255, 255))
                 item.setForeground(QColor(0, 0, 0))
         self.find_widget.hide()
@@ -415,6 +427,23 @@ class WidgetDemo(QWidget):
         self.var_list = lst
         # print(lst)
 
+    def addRow(self):
+        # 当前行的下方添加一行
+        try:
+            self.model.insertRows(self.table_view.currentIndex().row() + 1, 1)
+        except Exception as e:
+            print(e)
+
+    def addColumn(self):
+        self.model.insertColumns(self.table_view.currentIndex().column() + 1, 1)
+
+    def rightMenuShow(self):
+        try:
+            #菜单显示的位置
+            self.context_menu.popup(QCursor.pos())
+            self.context_menu.show()
+        except Exception as e:
+            print(e)
 
 
 
@@ -442,10 +471,10 @@ class InputWindowDemo(QTabWidget):
 
         #创建两个窗口
         #tab1：显示全部，tab2：只显示变量
-        self.mode1 = QStandardItemModel(100,100)
-        self.tab1 = WidgetDemo(self.mode1)
-        self.mode2 = QStandardItemModel(100,100)
-        self.tab2 = WidgetDemo(self.mode2)
+        self.model1 = QStandardItemModel(100,100)
+        self.tab1 = WidgetDemo(self.model1)
+        self.model2 = QStandardItemModel(100,100)
+        self.tab2 = WidgetDemo(self.model2)
 
 
         self.addTab(self.tab1,'数据视图')
@@ -467,7 +496,7 @@ class InputWindowDemo(QTabWidget):
             cnt = 0
             for cell in all_data[0]:
                 if cell != '':
-                    self.mode2.setItem(cnt,0,QStandardItem(str(cell)))
+                    self.model2.setItem(cnt,0,QStandardItem(str(cell)))
                     cnt += 1
 
 

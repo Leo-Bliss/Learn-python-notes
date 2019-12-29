@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QApplication,QWidget,QMessageBox
 from PyQt5.QtWidgets import QListWidget,QListWidgetItem,QStackedWidget
 from PyQt5.QtWidgets import QHBoxLayout,QStyleFactory
 from PyQt5.QtGui import QIcon,QPixmap,QPalette,QBrush
+from PyQt5.QtCore import Qt
 
 from projects.demo.Work.TCM_DSAS import InputWindow as IW
 from projects.demo.Work.TCM_DSAS import SelectionWindow as SW
@@ -32,6 +33,8 @@ class MainWindowDemo(QWidget):
     def initUI(self):
         self.setGeometry(450,100,1200,800)
         self.setWindowTitle('中医药数据特征选择分析平台')
+        #无边框
+        # self.setWindowFlag(Qt.FramelessWindowHint)
 
         self.list_widget = QListWidget()
         self.item_list = ['平台首页','数据导入','特征选择','数据中心','反馈建议','关于我们']
@@ -84,6 +87,7 @@ class MainWindowDemo(QWidget):
         #等比例划分布局
         hlayout.setStretch(0,1)
         hlayout.setStretch(1,5)
+        hlayout.setSpacing(0)
         self.setLayout(hlayout)
 
         #美化:
@@ -121,5 +125,15 @@ class MainWindowDemo(QWidget):
 if __name__=='__main__':
     app = QApplication(sys.argv)
     window = MainWindowDemo()
+    style = '''QListWidget{
+    background-color:#6699FF;
+    border-top:1px solid white;
+    border-bottom:1px solid white;
+    border-left:1px solid white;
+    border-top-left-radius:10px;
+    border-bottom-left-radius:10px;
+    }
+    '''
+    window.setStyleSheet(style)
     window.show()
     sys.exit(app.exec_())

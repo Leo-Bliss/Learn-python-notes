@@ -83,7 +83,7 @@ class Splash(QWidget):
 
     def addRow(self):
         # 当前行的下方添加一行
-        ret = self.model.insertRows(self.table.currentIndex().row() + 1, 1)
+        self.model.insertRows(self.table.currentIndex().row() + 1, 1)
 
     def addColumn(self):
         self.model.insertColumns(self.table.currentIndex().column() + 1, 1)
@@ -114,7 +114,7 @@ class Splash(QWidget):
 
     def rightMenuShow(self):
         try:
-            # 2菜单显示的位置
+            #菜单显示的位置
             self.contextMenu.popup(QCursor.pos())
             self.contextMenu.show()
         except Exception as e:
