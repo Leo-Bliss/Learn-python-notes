@@ -29,10 +29,14 @@ def createDB():
     return True
 
 
-def updata(sql):
+def update(sql,*args):
     conn = sqlite3.connect('./db/database.db', detect_types=sqlite3.PARSE_DECLTYPES)
     cursor = conn.cursor()
-    cursor.execute(sql)
+    try:
+        cursor.execute(sql,*args)
+    except Exception as e:
+        print(e)
+        pass
     conn.commit()
     conn.close()
 
@@ -49,9 +53,52 @@ def query(sql):
 if __name__=='__main__':
     # createDB()
     # sql = "insert into user values(4,'John',19,'Aasjdah','ashhajjds')"
-    # updata(sql)
-    sql = "select * from user order by 1 ASC "
-    query(sql)
+    # update(sql)
+    # # sql = "select * from user order by 1 ASC "
+    # # query(sql)
+
+    # # 删除icon表
+    # sql = "drop table userIcon"
+    # update(sql)
+
+    # # 建icon表
+    # sql = "create table userIcon(user_id varchar (50) primary key,file_name varchar (50) ,file_type varchar (10),content BLOB)"
+    # update(sql)
+
+    # 查看数据库字段
+    sql = "PRAGMA table_info(userIcon)"
+    res = query(sql)
+    print(res)
+
+    import base64
+    path = "./image/avatar.jpg"
+
+    # 导入图片
+    with open("{}".format(path),"rb") as f:
+        content = base64.b64encode(f.read())
+        dir,file = path.rsplit('/',maxsplit=1)
+        file_name,file_type = file.rsplit('.',maxsplit=1)
+        print(file_name,file_type)
+
+        # file_id = '2'
+        # sql = "insert into userIcon values(?,?,?,?)"
+        # para = (file_id,file_name,file_type,content)
+        # update(sql,para)
+
+    # #删除数据
+    # sql = "delete from userIcon where user_id = '2'"
+    # update(sql)
+
+    sql = "select * from userIcon"
+    res = query(sql)[0]
+
+    #导出图片
+    with open("./image/{}{}.{}".format(res[1],res[0],res[2]),"wb") as f:
+        f.write(base64.b64decode(res[-1]))
+
+
+
+
 
 
 
