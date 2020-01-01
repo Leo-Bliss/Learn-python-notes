@@ -146,7 +146,6 @@ class SelectionWindowdemo(QWidget):
             # print('-'*100)
             dtl = DTL()
             self.df = dtl.list_to_DataFrame(self.data)
-            res_list = []
             start = time.time()
             self.status_bar.showMessage('特征选择中...')
             print('特征选择中...')

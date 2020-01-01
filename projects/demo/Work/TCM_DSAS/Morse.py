@@ -42,3 +42,6 @@ class MorseDemo(object):
         res1 = ' '.join([self.encode_dict.get(item) for item in string])
         res2 = res1.replace('.','0').replace('-','1')
         return res1,res2
+
+if __name__=='__main__':
+    pass
