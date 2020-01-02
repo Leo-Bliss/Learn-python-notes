@@ -29,7 +29,7 @@ def getAimData(df, var_list, parameter_dict):
 if __name__ == '__main__':
 
     os.chdir('..')
-    file_name = 'data1.xlsx'
+    file_name = 'data2.xlsx'
     path = '{0}\data\{1}'.format(os.path.abspath('.'), file_name)
     df = pd.read_excel(path, sheet_name='Sheet1', index_col=0)
 
@@ -66,7 +66,14 @@ if __name__ == '__main__':
         print(data)
 
     df = pd.DataFrame(data=aim_list,columns=["old_RMSE","now_RMSE","best_features_count"])
+    #data1
     #topK:100-5000,100
     #n_components:1-10,1
     #alp:1-7,1
-    df.to_excel(excel_writer='./result/tuning_alp.xlsx',index=True,encoding='utf-8')
+
+    #data2
+    #topK:50-400,50
+    # n_components:1-10,1
+    # alp:1-7,1
+
+    df.to_excel(excel_writer='./result/tuning_alp2.xlsx',index=True,encoding='utf-8')
