@@ -39,8 +39,8 @@ class MainWindowDemo(QWidget):
         self.list_widget = QListWidget()
         self.item_list = ['平台首页','数据导入','特征选择','数据中心','反馈建议','关于我们']
         self.list_widget.addItems(self.item_list)
-        item1 = QListWidgetItem()
-        self.list_widget.addItem(item1)
+        # item1 = QListWidgetItem()
+        # self.list_widget.addItem(item1)
         # quit = QLabel('退出')
         # quit.setPixmap(QPixmap('./image/退出.png'))
 
