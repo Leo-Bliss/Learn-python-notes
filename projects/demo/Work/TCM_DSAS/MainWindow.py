@@ -1,21 +1,22 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-#@Time    :    2019/11/25 0025 19:54
+#@Time    :    2020/1/5 0005 3:39
 #@Author  :    tb_youth
-#@FileName:    MainWindow.py
+#@FileName:    MainWindow3.py
 #@SoftWare:    PyCharm
 #@Blog    :    https://blog.csdn.net/tb_youth
 
+
 '''
-主界面
+主界面:版本3，有边框
 '''
 
 import sys
-from PyQt5.QtWidgets import QApplication,QWidget,QMessageBox
-from PyQt5.QtWidgets import QListWidget,QListWidgetItem,QStackedWidget
+from PyQt5.QtWidgets import QApplication,QWidget,QVBoxLayout
+from PyQt5.QtWidgets import QListWidget,QStackedWidget
 from PyQt5.QtWidgets import QHBoxLayout,QStyleFactory
-from PyQt5.QtGui import QIcon,QPixmap,QPalette,QBrush
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
+
 
 from projects.demo.Work.TCM_DSAS import InputWindow as IW
 from projects.demo.Work.TCM_DSAS import SelectionWindow as SW
@@ -24,6 +25,7 @@ from projects.demo.Work.TCM_DSAS import ContactWindow
 from projects.demo.Work.TCM_DSAS import AboutUSWindow
 from projects.demo.Work.TCM_DSAS import HomeWindow
 
+
 class MainWindowDemo(QWidget):
     def __init__(self):
         super(MainWindowDemo,self).__init__()
@@ -31,34 +33,22 @@ class MainWindowDemo(QWidget):
         QApplication.setStyle(QStyleFactory.keys()[2])
 
     def initUI(self):
-        self.setGeometry(450,100,1200,800)
+        self.resize(1200,800)
+        #self.setGeometry(450,100,1200,800)
         self.setWindowTitle('中医药数据特征选择分析平台')
         #无边框
-        # self.setWindowFlag(Qt.FramelessWindowHint)
+        #self.setWindowFlag(Qt.FramelessWindowHint)
 
         self.list_widget = QListWidget()
         self.item_list = ['平台首页','数据导入','特征选择','数据中心','反馈建议','关于我们']
         self.list_widget.addItems(self.item_list)
-        # item1 = QListWidgetItem()
-        # self.list_widget.addItem(item1)
-        # quit = QLabel('退出')
-        # quit.setPixmap(QPixmap('./image/退出.png'))
 
-        # quit = QPushButton('退出')
-        # quit.setMaximumSize(80, 50)
-        # quit.setIcon(QIcon(QPixmap('./image/退出.png')))
-        # quit.clicked.connect(self.close)
-
-        # sizePolicy = QSizePolicy(QSizePolicy.Expanding,QSizePolicy.Fixed)
-        # # print(quit.size())
-        # quit.setSizePolicy(sizePolicy)
-        # self.list_widget.setItemWidget(item1,quit)
 
         #设置item间隔
         self.list_widget.setSpacing(5)
 
         #创建各个功能子窗口
-        self.interface_widget = HomeWindow.HomeWindow()
+        self.home = HomeWindow.HomeWindow()
         self.input_widget = IW.InputWindowDemo()
         self.select_feature_widget = SW.SelectionWindowdemo()
         # self.analyze_data_widget = QWidget()
@@ -70,7 +60,7 @@ class MainWindowDemo(QWidget):
 
         #将各个功能子窗口压入栈窗口
         self.stack_widget = QStackedWidget()
-        self.stack_widget.addWidget(self.interface_widget)
+        self.stack_widget.addWidget(self.home)
         self.stack_widget.addWidget(self.input_widget)
         self.stack_widget.addWidget(self.select_feature_widget)
         # self.stack_widget.addWidget(self.analyze_data_widget)
@@ -81,6 +71,8 @@ class MainWindowDemo(QWidget):
         self.stack_widget.addWidget(self.about_widget)
 
         #布局
+        vlayout = QVBoxLayout()
+
         hlayout = QHBoxLayout()
         hlayout.addWidget(self.list_widget)
         hlayout.addWidget(self.stack_widget)
@@ -88,27 +80,29 @@ class MainWindowDemo(QWidget):
         hlayout.setStretch(0,1)
         hlayout.setStretch(1,5)
         hlayout.setSpacing(0)
-        self.setLayout(hlayout)
+        vlayout.addLayout(hlayout)
+        vlayout.setStretch(0,1)
+        vlayout.setStretch(1,15)
+        self.setLayout(vlayout)
 
         #美化:
         #去边框
         self.list_widget.setFrameShape(False)
         #icon
         self.setWindowIcon(QIcon('./image/分析.png'))
-        # 背景图片
-        # palette = QPalette()
-        # pix = QPixmap(r'./')
-        # pix.scaled(self.width(),self.height())
-        # palette.setBrush(QPalette.Background,QBrush(pix))
-        # self.setPalette(palette)
+        # self.label.setPixmap(QPixmap('./image/分析.png'))
+
+
 
         #关联单击信号
         self.list_widget.currentRowChanged.connect(self.onClickedListWidget)
         #导入数据窗口与特征选择窗口信号与槽关联，用于传递导入的数据
+        self.home.user_button.clicked.connect(self.onClickedUserBuuton)
+        # self.home.user_center.triggered.connect(self.onClickedUserBuuton)
+
 
     #根据index切换功能子窗口
     def onClickedListWidget(self,index):
-        print(index)
         if index == 2:
             data = self.input_widget.tab1.data
             var_list = self.input_widget.tab1.var_list
@@ -120,20 +114,17 @@ class MainWindowDemo(QWidget):
         self.stack_widget.setCurrentIndex(index)
 
 
-
+    def onClickedUserBuuton(self):
+        print(233)
+        x = self.pos().x() + self.size().width() - self.home.user_widget.width()
+        y = self.pos().y() + 130
+        self.home.user_widget.move(x, y)
+        # 这里使用exec_,使对话框变为模态对话框
+        self.home.user_widget.exec_()
+        # self.home.user_widget.destroy()
 
 if __name__=='__main__':
     app = QApplication(sys.argv)
     window = MainWindowDemo()
-    style = '''QListWidget{
-    background-color:#6699FF;
-    border-top:1px solid white;
-    border-bottom:1px solid white;
-    border-left:1px solid white;
-    border-top-left-radius:10px;
-    border-bottom-left-radius:10px;
-    }
-    '''
-    window.setStyleSheet(style)
     window.show()
     sys.exit(app.exec_())
