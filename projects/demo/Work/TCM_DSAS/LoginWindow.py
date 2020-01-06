@@ -164,7 +164,7 @@ class LoginWidget(QWidget):
                 else:
                     md5 = MD5.MD5()
                     if md5.md5Encode(psw) != res[2]:
-                        print('密码错误！')
+                        QMessageBox.information(self, '结果', '密码错误')
                     else:
                         print('登录成功！')
                         self.addLocalUser(id)
@@ -189,11 +189,11 @@ class LoginWidget(QWidget):
         res = operator.query(sql)
         print(res)
         if len(res):
-            QMessageBox.about(QMainWindow(),'关于','该用户已经存在,建议您使用邮箱注册！')
+            QMessageBox.information(self, '关于', '该用户已经存在,建议您使用邮箱注册！', QMessageBox.Ok)
         else:
             self.second_psw = self.password_lineEdit.text()
             if self.second_psw!=self.first_psw:
-                QMessageBox.about(QMainWindow(), '关于', '前后输入密码不一致！')
+                QMessageBox.information(self, '关于', '前后输入密码不一致！', QMessageBox.Ok)
             else:
                 md5 = MD5.MD5()
                 sql = 'select * from user'
