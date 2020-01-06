@@ -1,44 +1,179 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-#@Time    :    17:13  2019/12/26
-#@Author  :    tb_youth
-#@FileName:    HomeWindow.py
-#@SoftWare:    PyCharm
-#@Blog    :    http://blog.csdn.net/tb_youth
+# @Time    :    2020/1/5 0005 4:14
+# @Author  :    tb_youth
+# @FileName:    HomeWindow1.py
+# @SoftWare:    PyCharm
+# @Blog    :    https://blog.csdn.net/tb_youth
+
 
 import sys
-from PyQt5.QtWidgets import QApplication,QWidget,QLabel,QHBoxLayout
-from PyQt5.QtGui import QPainter,QPalette,QPixmap,QBrush
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QHBoxLayout, QMenu, QDialog
+from PyQt5.QtWidgets import QAction, QLineEdit, QToolBar, QVBoxLayout, QPushButton
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtCore import Qt
+from projects.demo.Work.TCM_DSAS import LoadQSSHelper
+from projects.demo.Work.TCM_DSAS import LoginWindow
+
+
+class User():
+    def __init__(self, id='admin01@qq.com', name='visitor', icon='./userIcon/user01.png'):
+        self.id = id
+        self.name = name
+        self.icon = icon
+
+
+class UserInfor(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.resize(300, 500)
+        self.setWindowIcon(QIcon('./image/user01.png'))
+        self.setWindowTitle('User')
+        self.personButton = QPushButton('个人中心')
+        self.messageButton = QPushButton('我的通知')
+        self.accountButton = QPushButton('登录账号')
+        self.logoutButton = QPushButton('退出登录')
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.personButton)
+        layout.addWidget(self.messageButton)
+        layout.addWidget(self.accountButton)
+        layout.addWidget(self.logoutButton)
+        layout.setSpacing(15)
+        layout.addStretch(1)
+        self.setLayout(layout)
+
 
 class HomeWindow(QWidget):
     def __init__(self):
-        super(HomeWindow,self).__init__()
-        self.resize(1000,800)
+        super(HomeWindow, self).__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.resize(1000, 800)
+        self.user_widget = UserInfor()
+        self.loginWindow = LoginWindow.LoginWidget()
+
+        self.label = QLabel("平台导航")
+        hlayout1 = QHBoxLayout()
+        hlayout2 = QHBoxLayout()
+        hlayout1.addWidget(self.label)
+        hlayout1.addLayout(hlayout2)
+        hlayout1.setStretch(0, 1)
+        hlayout1.setStretch(1, 14)
+        self.line_edit = QLineEdit()
+        hlayout2.addWidget(self.line_edit)
+        self.visit_data = QAction("访问数据")
+        self.analysis_data = QAction("分析数据")
+        self.upload_data = QAction("上传数据")
+        self.manage_setting = QAction("管理设置")
+        # self.user_center = QAction('用户中心')
+        self.tool_bar = QToolBar()
+        self.tool_bar.addAction(self.visit_data)
+        self.tool_bar.addSeparator()
+        self.tool_bar.addAction(self.analysis_data)
+        self.tool_bar.addSeparator()
+        self.tool_bar.addAction(self.upload_data)
+        self.tool_bar.addSeparator()
+        self.tool_bar.addAction(self.manage_setting)
+        self.tool_bar.addSeparator()
+        # self.tool_bar.addAction(self.user_center)
+        self.tool_bar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.user_button = QPushButton("admin")
+
+        hlayout2.addWidget(self.tool_bar)
+        hlayout2.addWidget(self.user_button)
+
+        # 显示用户信息
+        loader = LoadQSSHelper.LoadQSSHelper()
+        qssStyle = loader.load(('./qss_/user.qss'))
+        self.user_button.setStyleSheet(qssStyle)
+        self.now_user = User()
+        self.loadUser(self.now_user)
+        self.userPos = self.user_button.pos()
+
+        # 首页中心图片
+        self.label = QLabel()
+        self.label.setStyleSheet('QLabel{border-image:url( ./image/page2.png);}')
+
+        # icon
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./image/访问数据.png'), QIcon.Normal, QIcon.Off)
+        self.visit_data.setIcon(icon)
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./image/分析数据.png'), QIcon.Normal, QIcon.Off)
+        self.analysis_data.setIcon(icon)
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./image/上传数据.png'), QIcon.Normal, QIcon.Off)
+        self.upload_data.setIcon(icon)
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./image/管理设置.png'), QIcon.Normal, QIcon.Off)
+        self.manage_setting.setIcon(icon)
+
+        # 布局
+        layout = QVBoxLayout()
+        layout.addLayout(hlayout1)
+        layout.addWidget(self.label)
+        layout.setStretch(0, 1)
+        layout.setStretch(1, 20)
+        self.setLayout(layout)
+
+        self.user_button.clicked.connect(self.onClicked)
+        self.user_widget.accountButton.clicked.connect(self.onClickAccountButton)
+        self.user_widget.logoutButton.clicked.connect(self.onClickLogoutButton)
+        self.loginWindow.send.sendmsg.connect(self.getUserInfor)
+
+    def loadUser(self, user):
+        self.user_button.setText(user.name)
+        self.user_button.setIcon(QIcon(user.icon))
+        # icon = QIcon()
+        # icon.addPixmap(QPixmap(user_icon), QIcon.Normal, QIcon.Off)
+        # self.user_center.setIcon(icon)
+        # self.user_center.setText(user_name)
+        self.user_widget.setWindowIcon(QIcon(user.icon))
+        self.user_widget.setWindowTitle(user.name)
+
+    def onClicked(self):
+        print(233)
+        x = self.pos().x() + self.size().width() - self.user_widget.width()
+        y = self.pos().y() + 130
+        self.user_widget.move(x, y)
+        # 这里使用show,用于调试
+        self.user_widget.show()
+
+    def onClickAccountButton(self):
+        self.loginWindow.setWindowModality(Qt.ApplicationModal)
+        # x = self.pos().x() - self.loginWindow.width()
+        # y = self.pos().y() + (self.height()-self.loginWindow.height())
+        # self.loginWindow.move(x,y)
+        self.user_widget.close()
+        self.loginWindow.show()
+
+    def getUserInfor(self, infor, icon_infor):
+        file_name = r"./userIcon/{}#{}.{}".format(icon_infor[0], icon_infor[1], icon_infor[2])
+        # print(file_name)
+        # print('get：',infor)
+        self.now_user = User(infor[0], infor[1], file_name)
+        icon = QIcon(self.now_user.icon)
+        self.user_widget.setWindowIcon(icon)
+        self.user_button.setIcon(icon)
+        self.user_widget.setWindowTitle(self.now_user.name)
+        self.user_button.setText(self.now_user.name)
+        self.user_widget.accountButton.setEnabled(False)
+
+    def onClickLogoutButton(self):
+        self.user_widget.accountButton.setEnabled(True)
+        default = User()
+        self.user_widget.setWindowTitle(default.name)
+        self.user_widget.setWindowIcon(QIcon(default.icon))
+        self.user_button.setText(default.name)
+        self.user_button.setIcon(QIcon(default.icon))
 
 
-        # # 背景图片
-        # palette = QPalette()
-        # pix = QPixmap('./image/page1.png')
-        # pix.scaled(self.width(),self.height())
-        # palette.setBrush(QPalette.Background,QBrush(pix))
-        # self.setPalette(palette)
-
-        # self.label = QLabel()
-        # self.label.setStyleSheet('QLabel{border-image:url( ./image/page2.png);}')
-        # layout = QHBoxLayout()
-        # layout.addWidget(self.label)
-        # self.setLayout(layout)
-
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.drawRect(self.rect())
-        # todo 设置背景图片，平铺到整个窗口，随着窗口改变而改变
-        pixmap = QPixmap('./image/page1.png')
-        painter.drawPixmap(self.rect(), pixmap)
-
-
-if __name__=='__main__':
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = HomeWindow()
     window.show()
