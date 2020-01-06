@@ -1,0 +1,27 @@
+QWidget[name='UI']{
+border-width: 2px;
+border-radius: 10px;
+background-image:url(./image/first.jpg);
+}
+QPushButton[name='loginButton']{
+background-color: #00BFFF;
+color:white;
+}
+QLineEdit{
+font-size: 20px;
+border: none;
+border-bottom: 1px solid lightgray;
+background-color: transparent;
+}
+QLineEdit:hover {
+	border-bottom: 1px solid gray;
+}
+QLineEdit:focus{
+	border-bottom: 1px solid rgb(0, 170, 255);
+}
+QWidget{
+color:gray;
+}
+QCheckBox{
+border:none;
+}

@@ -77,7 +77,7 @@ class LoginWidget(QWidget):
 
         #使用了qss时会无效
         # palette = QPalette()
-        # pix = QPixmap(r'./image/first.jpg')
+        # pix = QPixmap(r'./image/login.jpg')
         # pix.scaled(self.width(),self.height())
         # palette.setBrush(QPalette.Background,QBrush(pix))
         # self.setPalette(palette)
@@ -143,7 +143,7 @@ class LoginWidget(QWidget):
     #背景图片铺满窗口
     def paintEvent(self,event):
         painter = QPainter(self)
-        painter.drawPixmap(0,0,self.width(),self.height(),QPixmap('./image/first.jpg'))
+        painter.drawPixmap(0,0,self.width(),self.height(),QPixmap('./image/login.jpg'))
 
     def onClickLogin(self):
         if self.checkBox1.isChecked():
