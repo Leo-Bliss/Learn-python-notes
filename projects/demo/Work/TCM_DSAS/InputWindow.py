@@ -23,7 +23,7 @@ from openpyxl import workbook
 import xlrd
 import time
 
-from projects.demo.Work.TCM_DSAS import VariableSettingWindow
+import VariableSettingWindow
 
 #查找替换窗口
 class  FindWidget(QWidget):

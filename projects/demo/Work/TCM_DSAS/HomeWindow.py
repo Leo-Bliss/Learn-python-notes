@@ -121,7 +121,7 @@ class HomeWindow(QWidget):
         layout.setStretch(1, 20)
         self.setLayout(layout)
 
-        self.user_button.clicked.connect(self.onClicked)
+        # self.user_button.clicked.connect(self.onClicked)
         self.user_widget.accountButton.clicked.connect(self.onClickAccountButton)
         self.user_widget.logoutButton.clicked.connect(self.onClickLogoutButton)
         self.loginWindow.send.sendmsg.connect(self.getUserInfor)

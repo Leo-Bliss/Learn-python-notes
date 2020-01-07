@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QFormLayout,QHBoxLayout,QVBoxLayout
 
 import smtplib
 from email.mime.text import MIMEText
-from projects.demo.Work.TCM_DSAS import Morse
+import Morse
 
 class SendEmail():
     def __init__(self,theme,content):

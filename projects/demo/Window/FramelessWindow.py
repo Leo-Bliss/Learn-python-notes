@@ -24,10 +24,10 @@ class FrameLessWindow(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("异形窗口")
-        self.pix = QBitmap('./image/mask2.png')
-        self.resize(self.pix.size())
-        self.initPos = self.pos()
+        self.setWindowTitle("无边框窗口")
+        # self.pix = QBitmap('./image/mask2.png')
+        # self.resize(self.pix.size())
+        self.resize(1200,800)
         self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.tool_bar = QToolBar()

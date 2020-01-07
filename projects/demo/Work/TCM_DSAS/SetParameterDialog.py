@@ -14,7 +14,7 @@ import sys
 from PyQt5.QtWidgets import QApplication,QDialog,QLabel,QLineEdit
 from PyQt5.QtWidgets import QFormLayout,QHBoxLayout,QPushButton
 from PyQt5.QtGui import QIntValidator,QIcon
-from PyQt5.QtCore import pyqtSignal,pyqtSlot,QObject
+from PyQt5.QtCore import pyqtSignal,QObject
 
 
 #自定义的信号类，用于窗口通信

@@ -72,9 +72,11 @@ class SelectionWindowdemo(QWidget):
         hlayout.addWidget(self.tool_bar)
         hlayout.addStretch(3)
         hlayout.setSpacing(10)
-
         self.text_edit = QTextEdit()
-        self.text_edit.setText('Four steps for features selection:\nFliter,Semi_weapper,Union,Voting.')
+        file_name = "./other/aboutFSFS.txt"
+        with open(file_name, 'r', encoding='utf-8') as f:
+            text = f.read()
+        self.text_edit.setText(text)
         self.text_edit.setReadOnly(True)
         self.run.setEnabled(False)
 
@@ -95,15 +97,9 @@ class SelectionWindowdemo(QWidget):
     #选择特征选择的算法
     def selectionChange1(self):
         self.status_bar.showMessage(self.comb1.currentText(),5000)
-        text = 'Features selection information'
-        if self.comb1.currentText() == 'FSFS':
-            text = 'four steps for features selection:\nFliter,Semi_weapper,Union,Voting.'
-        elif self.comb1.currentText() == 'Lasso':
-            text = '''
-                  Lasso的全称叫做Least absolute shrinkage and selection operator，
-                  直译过来为最小收缩与选择算子。
-                  其本质就是在常规的线性回归的基础上对参数加了一个L1正则化约束。
-                 '''
+        file_name = "./other/about{}.txt".format(self.comb1.currentText())
+        with open(file_name,'r',encoding='utf-8') as f:
+            text = f.read()
         self.text_edit.setText(text)
 
     #搜索算法

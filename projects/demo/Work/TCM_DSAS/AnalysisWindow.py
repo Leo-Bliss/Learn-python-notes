@@ -19,7 +19,7 @@ import sys
 import random
 from openpyxl import workbook
 
-from projects.demo.Work.TCM_DSAS.DataFrameListMTF import DataFrameListMTF as DTL
+from DataFrameListMTF import DataFrameListMTF as DTL
 
 
 class AnalysisWindowDemo(QWidget):

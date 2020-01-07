@@ -18,12 +18,12 @@ from PyQt5.QtWidgets import QHBoxLayout,QStyleFactory
 from PyQt5.QtGui import QIcon
 
 
-from projects.demo.Work.TCM_DSAS import InputWindow as IW
-from projects.demo.Work.TCM_DSAS import SelectionWindow as SW
-from projects.demo.Work.TCM_DSAS import DataCenterWindow
-from projects.demo.Work.TCM_DSAS import ContactWindow
-from projects.demo.Work.TCM_DSAS import AboutUSWindow
-from projects.demo.Work.TCM_DSAS import HomeWindow
+import InputWindow as IW
+import SelectionWindow as SW
+import DataCenterWindow
+import ContactWindow
+import AboutUSWindow
+import HomeWindow
 
 
 class MainWindowDemo(QWidget):

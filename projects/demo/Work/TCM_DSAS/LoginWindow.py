@@ -18,9 +18,9 @@ import os
 import re
 
 from PyQt5.QtGui import QIcon,QPainter,QPixmap,QBrush,QPalette
-from projects.demo.Work.TCM_DSAS import LoadQSSHelper
-from projects.demo.Work.TCM_DSAS.localDB.src_ import DBOperator
-from projects.demo.Work.TCM_DSAS.localDB.src_ import MD5
+import LoadQSSHelper
+from localDB.src_ import DBOperator
+from localDB.src_ import MD5
 
 
 class EmitUserInforSignal(QObject):

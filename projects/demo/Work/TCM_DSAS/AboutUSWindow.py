@@ -15,7 +15,7 @@ import webbrowser
 from PyQt5.QtWidgets import QApplication,QWidget,QTextBrowser
 from PyQt5.QtWidgets import QVBoxLayout,QHBoxLayout,QPushButton
 from PyQt5.QtGui import QIcon,QPixmap
-from projects.demo.Work.TCM_DSAS import LoadQSSHelper
+import LoadQSSHelper
 
 class AboutUSWindowDemo(QWidget):
     def __init__(self):
