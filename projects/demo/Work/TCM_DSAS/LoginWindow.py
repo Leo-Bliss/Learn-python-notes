@@ -157,14 +157,17 @@ class LoginWidget(QWidget):
             psw = self.password_lineEdit.text()
             sql = "select * from user where user_id='{}'".format(id)
             try:
-                res = operator.query(sql)[0]
+                res = operator.query(sql)
                 # print(res)
                 if not len(res):
-                    print('该用户不存在')
+                    QMessageBox.information(self, '关于', '该用户不存在！', QMessageBox.Ok)
+                    return
                 else:
+                    res = res[0]
                     md5 = MD5.MD5()
                     if md5.md5Encode(psw) != res[2]:
                         QMessageBox.information(self, '结果', '密码错误')
+                        return
                     else:
                         print('登录成功！')
                         self.addLocalUser(id)
