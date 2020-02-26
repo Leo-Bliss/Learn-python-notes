@@ -151,7 +151,7 @@ class LoginWidget(QWidget):
             self.registeUser()
         else:
             print('登录')
-            db = './localDB/db/userDB'
+            db = './localDB/db/userDB.db'
             operator = DBOperator.DBOperator(db)
             id = self.id_lineEdit.text()
             psw = self.password_lineEdit.text()
