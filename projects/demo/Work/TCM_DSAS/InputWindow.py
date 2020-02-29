@@ -13,12 +13,12 @@
 '''
 
 import sys
-from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget,QMenu
+from PyQt5.QtWidgets import QApplication,QWidget,QTabWidget,QMenu,qApp
 from PyQt5.QtWidgets import QTableView,QFileDialog,QPushButton
 from PyQt5.QtWidgets import QMenuBar,QToolBar,QStatusBar,QAction,QHBoxLayout
 from PyQt5.QtWidgets import QVBoxLayout,QSizePolicy,QLineEdit
 from PyQt5.QtGui import QStandardItemModel,QPixmap,QIcon,QStandardItem,QColor,QCursor
-from PyQt5.QtCore import Qt,QDir
+from PyQt5.QtCore import Qt,QDir,QThread,pyqtSlot,pyqtSignal
 from openpyxl import workbook
 import xlrd
 import time
@@ -88,6 +88,33 @@ class  FindWidget(QWidget):
     def triggeredClose(self):
         self.hide()
 
+
+class MyThread(QThread):
+    modelSignal = pyqtSignal(QStandardItemModel)
+    intSignal = pyqtSignal(int)
+    finished = pyqtSignal()
+    def __init__(self,file_name):
+        super().__init__()
+        self.file_name = file_name
+        self.model = QStandardItemModel()
+
+    # def __del__(self):
+    #     self.wait()
+
+    def run(self):
+        # 这里读取数据返回列表便于表格中数据的更新
+        data_list = read_xlsx(self.file_name)
+        print('start work!')
+        cnt = len(data_list)
+        for i,rows in enumerate(data_list):
+            row = [QStandardItem(str(cell)) for cell in rows]
+            self.model.appendRow(row)
+            percent = int(i / cnt * 100 + 0.5)
+            self.intSignal.emit(percent)
+        self.intSignal.emit(100)
+        self.modelSignal.emit(self.model)
+        print('send finised')
+        self.finished.emit()
 
 
 class WidgetDemo(QWidget):
@@ -234,7 +261,18 @@ class WidgetDemo(QWidget):
         # icon.addPixmap(QPixmap('./image/替换.png'), QIcon.Normal, QIcon.Off)
         # self.replace.setIcon(icon)
 
+    def showInitProgress(self,i):
+        self.status_bar.showMessage("数据载入进度{}%".format(i))
+    def loadData(self,model):
+        print('load...')
+        self.model = model
+        self.model.itemChanged.connect(self.dealItemChanged)
+        self.table_view.setModel(self.model)
+        qApp.processEvents()
 
+        # self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # self.table_view.resizeColumnsToContents()
+        # self.table_view.resizeRowsToContents()
 
     def triggeredOpen(self):
         self.status_bar.showMessage('打开文件',5000)
@@ -245,23 +283,19 @@ class WidgetDemo(QWidget):
         self.dialog.setFilter(QDir.Files)
         if self.dialog.exec_():
             try:
-                start = time.time()
+                # start = time.time()
                 file_name = self.dialog.selectedFiles()[0]
-                #这里读取数据返回列表便于表格中数据的更新
-                data_list = read_xlsx(file_name)
-                self.data = data_list
-                self.model = QStandardItemModel()
-                for rows in data_list:
-                    row = [QStandardItem(str(cell)) for cell in rows]
-                    self.model.appendRow(row)
-                self.model.itemChanged.connect(self.dealItemChanged)
-                self.table_view.setModel(self.model)
-                # self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-                self.table_view.resizeColumnsToContents()
-                self.table_view.resizeRowsToContents()
-                end = time.time()
-                self.status_bar.showMessage('数据加载完毕,耗时{}秒'.format(end-start))
-                self.setting.setEnabled(True)
+
+                #这里线程实例化一定要实例化成员变量，否则线程容易销毁
+                self.thread = MyThread(file_name)
+                self.thread.modelSignal.connect(self.loadData)
+                self.thread.intSignal.connect(self.showInitProgress)
+                self.thread.finished.connect(self.thread.quit)
+                self.thread.start()
+
+                # end = time.time()
+                # self.status_bar.showMessage('数据加载完毕,耗时{}秒'.format(end-start))
+                # self.setting.setEnabled(True)
             except Exception as e:
                 print(e)
                 pass
