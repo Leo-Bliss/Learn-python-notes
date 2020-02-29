@@ -15,20 +15,20 @@ QSqlTableMOdel
 '''
 
 import sys
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+# from PyQt5.QtCore import *
+# from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtSql import *
 
-def  initModel(model):
+def initModel(model):
     model.setTable('user')
     model.setEditStrategy(QSqlTableModel.OnFieldChange)
     model.select()
-    model.setHeaderData(0,Qt.Horizontal,'ID')
-    model.setHeaderData(1, Qt.Horizontal, 'name')
-    model.setHeaderData(2, Qt.Horizontal, 'age')
-    model.setHeaderData(3, Qt.Horizontal, 'address')
-    model.setHeaderData(4, Qt.Horizontal, 'tel')
+    # model.setHeaderData(0,Qt.Horizontal,'ID')
+    # model.setHeaderData(1, Qt.Horizontal, 'name')
+    # model.setHeaderData(2, Qt.Horizontal, 'age')
+    # model.setHeaderData(3, Qt.Horizontal, 'address')
+    # model.setHeaderData(4, Qt.Horizontal, 'tel')
 
 def createView(title,model):
     view = QTableView()
