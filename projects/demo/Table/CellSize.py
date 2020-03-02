@@ -6,8 +6,12 @@
 #@SoftWare:    PyCharm
 #@Blog    :    https://blog.csdn.net/tb_youth
 
+'''
+单元格大小:setRowHeight(row,size) setColumnWidth(col,size)
+单元格合并:setSpan(x,y,rowSpan,colSpan)
+'''
 import sys
-from PyQt5.QtWidgets import QApplication,QMainWindow,QTableWidgetItem,QWidget,QTableWidget,QHBoxLayout
+from PyQt5.QtWidgets import QApplication,QTableWidgetItem,QWidget,QTableWidget,QHBoxLayout
 
 class CellSizeDemo(QWidget):
     def __init__(self):
@@ -24,6 +28,9 @@ class CellSizeDemo(QWidget):
 
         item1 = 'Hello, I xxxxxxxxxxxxxxxxxxxxxxxx.Thank you!'
         tableWidget.setItem(0,0,QTableWidgetItem(item1))
+
+        tableWidget.setItem(2, 0, QTableWidgetItem("Joe"))
+        tableWidget.setSpan(2,0,2,1)
 
         #修改表格大小
         #第一个参数：row
