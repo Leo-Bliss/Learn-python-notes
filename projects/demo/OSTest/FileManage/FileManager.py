@@ -33,7 +33,9 @@ class FileManager:
             否则移动到创建的同名文件夹下
             '''
             for file in files:
-                name = file.rsplit('.',maxsplit=1)[0]
+                name,type = file.rsplit('.',maxsplit=1)
+                if name == 'main':
+                    continue
                 aim_dir = '{}\{}'.format(self.src_dir,name)
                 # print(aim_dir)
                 now_dir = '{}\{}'.format(root, file)
@@ -50,6 +52,7 @@ class FileManager:
                         print('{}已经移动到了{}'.format(now_dir, aim_dir))
                     except:
                         pass
+            break
 
 if __name__=='__main__':
     path = r'D:\ACM'
