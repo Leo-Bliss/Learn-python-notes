@@ -14,6 +14,7 @@ from PyQt5 import  QtWidgets
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout,QWidget,QStatusBar
 from PyQt5.QtWidgets import QTableView,QHBoxLayout,QFileDialog,QHeaderView
 from PyQt5.QtGui import QStandardItem,QStandardItemModel,QColor,QIcon
+from PyQt5.QtCore import QThread,pyqtSignal
 import matplotlib.pyplot as plt
 import sys
 import random
@@ -156,6 +157,8 @@ class AnalysisWindowDemo(QWidget):
 
         self.draw_button.setEnabled(False)
 
+    def showStatusBarMessage(self, msg):
+        self.status_bar.showMessage(msg)
     #导出数据分析结果
     def onClickOutput(self):
         if self.y_predict is None:
@@ -165,30 +168,42 @@ class AnalysisWindowDemo(QWidget):
                                                            'ALL Files(*);;xlsx(*.xlsx);;xls(*.xls);;csv(*.csv)')
         if file_path == '':
             return
-        wb = workbook.Workbook()
-        wb.encoding='utf-8'
-        wa = wb.active
-        # 文件中写入数据
-        try:
-            rows = self.model.rowCount()
-            columns = self.model.columnCount()
-            for i in range(rows):
-                item = []
-                for j in range(columns):
-                    item.append(self.model.index(i, j).data())
-                wa.append(item)
-            wb.save(file_path)
-        except Exception as e:
-            print(e)
-            return
-        try:
-            self.plt.savefig('{}_img.svg'.format(file_path.split('.',maxsplit=1)[0]))
-        except:
-            pass
-        self.status_bar.showMessage('导出完毕!',5000)
+        self.writeThread = SaveThread(file_path,self.model,self.plt)
+        self.writeThread.start_signal.connect(self.showStatusBarMessage)
+        self.writeThread.end_signal.connect(self.writeThread.quit)
+        self.writeThread.start()
         print('导出完毕!')
 
+class SaveThread(QThread):
+    start_signal = pyqtSignal(str)
+    end_signal = pyqtSignal()
+    def __init__(self,file_path,model,plt):
+        super(QThread,self).__init__()
+        self.file_path = file_path
+        self.model = model
+        self.plt = plt
 
+    def run(self):
+        self.start_signal.emit('导出准备中...')
+        try:
+            dtl = DTL()
+            data_list = dtl.model_to_list(self.model)
+            wb = workbook.Workbook()
+            wb.encoding = 'utf-8'
+            wa = wb.active
+            cnt = len(data_list)
+            for i,item in enumerate(data_list):
+                wa.append(item)
+                self.start_signal.emit('导出进度:{}%'.format(int(i/cnt*100)))
+            wb.save(self.file_path)
+            try:
+                self.plt.savefig('{}_img.svg'.format(self.file_path.rsplit('.', maxsplit=1)[0]))
+            except:
+                pass
+            self.start_signal.emit('导出进度:100%')
+            self.end_signal.emit()
+        except Exception as e:
+            print(e)
 
 
 
