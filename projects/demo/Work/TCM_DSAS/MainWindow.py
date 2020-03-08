@@ -7,9 +7,6 @@
 #@Blog    :    https://blog.csdn.net/tb_youth
 
 
-'''
-主界面:版本3，有边框
-'''
 
 import sys
 from PyQt5.QtWidgets import QApplication,QWidget,QVBoxLayout
@@ -17,13 +14,13 @@ from PyQt5.QtWidgets import QListWidget,QStackedWidget
 from PyQt5.QtWidgets import QHBoxLayout,QStyleFactory
 from PyQt5.QtGui import QIcon
 
-
 import InputWindow as IW
 import SelectionWindow as SW
-import DataCenterWindow
+# import DataCenterWindow
 import ContactWindow
 import AboutUSWindow
 import HomeWindow
+
 
 
 class MainWindowDemo(QWidget):
@@ -52,9 +49,9 @@ class MainWindowDemo(QWidget):
         self.input_widget = IW.InputWindowDemo()
         self.select_feature_widget = SW.SelectionWindowdemo()
         # self.analyze_data_widget = QWidget()
-        self.database_widget = DataCenterWindow.DataCenterWindow()
-        self.algorithm_widget = QWidget()
-        self.konwledge_widget = QWidget()
+        self.database_widget = QWidget() #DataCenterWindow.DataCenterWindow()
+        # self.algorithm_widget = QWidget()
+        # self.konwledge_widget = QWidget()
         self.contact_widget = ContactWindow.ConcatWindow()
         self.about_widget = AboutUSWindow.AboutUSWindowDemo()
 
@@ -71,8 +68,6 @@ class MainWindowDemo(QWidget):
         self.stack_widget.addWidget(self.about_widget)
 
         #布局
-        vlayout = QVBoxLayout()
-
         hlayout = QHBoxLayout()
         hlayout.addWidget(self.list_widget)
         hlayout.addWidget(self.stack_widget)
@@ -80,6 +75,8 @@ class MainWindowDemo(QWidget):
         hlayout.setStretch(0,1)
         hlayout.setStretch(1,5)
         hlayout.setSpacing(0)
+
+        vlayout = QVBoxLayout()
         vlayout.addLayout(hlayout)
         vlayout.setStretch(0,1)
         vlayout.setStretch(1,15)
@@ -104,18 +101,14 @@ class MainWindowDemo(QWidget):
     #根据index切换功能子窗口
     def onClickedListWidget(self,index):
         if index == 2:
-            data = self.input_widget.tab1.data
-            var_list = self.input_widget.tab1.var_list
-            try:
-                self.select_feature_widget.data = data
-                self.select_feature_widget.var_list = var_list
-            except:
-                pass
+                self.input_widget.data_view_tab.signal.sender.connect(self.select_feature_widget.getModel)
+                self.input_widget.data_view_tab.signal.send(self.input_widget.data_view_tab.model)
+        else:
+            pass
         self.stack_widget.setCurrentIndex(index)
 
 
     def onClickedUserBuuton(self):
-        print(233)
         x = self.pos().x() + self.size().width() - self.home.user_widget.width()
         y = self.pos().y() + 130
         self.home.user_widget.move(x, y)
